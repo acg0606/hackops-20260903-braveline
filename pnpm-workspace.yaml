@@ -1,0 +1,21 @@
+allowBuilds:
+  unrs-resolver: true
+virtualStoreDirMaxLength: 30
+minimumReleaseAgeExclude:
+  - '@rolldown/binding-android-arm64@1.2.7'
+  - '@rolldown/binding-darwin-arm64@1.2.7'
+  - '@rolldown/binding-freebsd-x64@1.2.7'
+  - '@rolldown/binding-linux-ppc64-gnu@1.2.7'
+  - '@rolldown/binding-linux-x64-gnu@1.2.7'
+  - '@rolldown/binding-openharmony-arm64@1.2.7'
+  - '@vitest/mocker@5.0.0'
+  - '@vitest/spy@5.0.0'
+  - react-native-purchases-ui@10.9.0
+  - react-native-purchases@10.9.0
+  - vitest@5.0.0
+  - '@expo/cli@57.0.22'
+  - '@expo/ui@57.0.16'
+  - expo-modules-core@57.0.16
+  - expo-modules-jsi@57.0.8
+  - expo-router@57.0.19
+  - expo@57.0.20

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-04T15:35:00-03:00",
+  "project": "BraveLine",
+  "scope": "local-debug-evidence",
+  "claims": [
+    {
+      "status": "FACT",
+      "claim": "TypeScript typecheck passed with no errors.",
+      "command": "pnpm typecheck"
+    },
+    {
+      "status": "FACT",
+      "claim": "Eight Vitest files and 37 tests passed.",
+      "command": "pnpm test"
+    },
+    {
+      "status": "FACT",
+      "claim": "ESLint passed with zero warnings in the short-path staging copy.",
+      "command": "eslint src tests --max-warnings 0"
+    },
+    {
+      "status": "FACT",
+      "claim": "Expo dependency compatibility check passed.",
+      "command": "pnpm exec expo install --check"
+    },
+    {
+      "status": "FACT",
+      "claim": "Static web export completed for Prepare, Rehearse, Ready, and Plus routes.",
+      "command": "pnpm exec expo export --platform web --output-dir dist"
+    },
+    {
+      "status": "FACT",
+      "claim": "Android API 36 debug APK assembled from a short-path staging copy.",
+      "artifact": "artifacts/native/braveline-debug-api36-20260904.apk",
+      "bytes": 210558443,
+      "sha256": "60A01F77306DC4137C4985B01D0529448819514AC7D215DE83B9D71D40291B91"
+    },
+    {
+      "status": "FACT",
+      "claim": "Phone-sized browser captures were visually inspected and the preview-only purchase boundary was visible.",
+      "artifacts": [
+        "docs/evidence/prepare-390x844.png",
+        "docs/evidence/rehearse-390x844.png",
+        "docs/evidence/plus-preview-390x844.png",
+        "docs/evidence/ready-empty-390x844.png"
+      ]
+    },
+    {
+      "status": "UNKNOWN",
+      "claim": "Native microphone recording, playback, deletion, dark mode, and 1.3 font-scale behavior still require an API 36 device or emulator smoke pass."
+    },
+    {
+      "status": "HOLD",
+      "claim": "RevenueCat purchase proof, store publication, public demo video, and Devpost submission are external gates and are not claimed by this manifest."
+    }
+  ]
+}

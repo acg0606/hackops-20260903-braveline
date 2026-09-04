@@ -10,13 +10,13 @@ import type { ComponentProps, PropsWithChildren } from 'react';
 import { createContext, useContext } from 'react';
 import {
   Pressable,
-  SafeAreaView,
   StyleSheet,
   Text,
   type TextProps,
   View,
   type ViewStyle,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const palette = {
   chalk: '#F8F8E9',
@@ -54,7 +54,9 @@ export function BraveCanvas({ children }: PropsWithChildren) {
 
   return (
     <FontContext.Provider value={fontsLoaded}>
-      <SafeAreaView style={styles.canvas}>{children}</SafeAreaView>
+      <SafeAreaView edges={['top', 'bottom']} style={styles.canvas}>
+        {children}
+      </SafeAreaView>
     </FontContext.Provider>
   );
 }

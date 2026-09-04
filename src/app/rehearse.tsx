@@ -21,6 +21,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getScenarioPhrase, IMPOSSIBLE_DEADLINE_SCENARIO } from '@/domain/scenarios';
 import { braveLineSessionStore, useBraveLineAudio } from '@/services';
@@ -45,13 +46,22 @@ type GuideLevel = 0 | 15 | 25;
 
 export default function RehearseScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ mode?: string; phraseId?: string }>();
+  const params = useLocalSearchParams<{
+    cleanupWarning?: string;
+    mode?: string;
+    phraseId?: string;
+  }>();
   const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const audio = useBraveLineAudio();
   const [guideLevel, setGuideLevel] = useState<GuideLevel>(15);
   const [guideSpeaking, setGuideSpeaking] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(() =>
+    params.cleanupWarning === 'stale-session-metadata'
+      ? 'The previous audio was removed. Its stale session metadata could not be cleared, but it cannot play the deleted file.'
+      : null,
+  );
   const [reducedMotion, setReducedMotion] = useState(false);
   const reveal = useRef(new Animated.Value(0)).current;
   const signal = useRef(new Animated.Value(1)).current;
@@ -63,14 +73,15 @@ export default function RehearseScreen() {
   });
 
   const frame = useMemo(() => {
-    const frameHeight = Platform.OS === 'web' ? width * (1821 / 864) : height;
+    const frameHeight =
+      Platform.OS === 'web' ? width * (1821 / 864) : height - insets.top - insets.bottom;
     return {
       h: frameHeight,
       sx: width / 864,
       sy: frameHeight / 1821,
       w: width,
     };
-  }, [height, width]);
+  }, [height, insets.bottom, insets.top, width]);
 
   const x = (value: number) => value * frame.sx;
   const y = (value: number) => value * frame.sy;
@@ -79,6 +90,16 @@ export default function RehearseScreen() {
     params.mode === 'retry' && typeof params.phraseId === 'string'
       ? getScenarioPhrase(IMPOSSIBLE_DEADLINE_SCENARIO, params.phraseId)
       : undefined;
+  const isRetry = Boolean(retryPhrase);
+  const activePhraseText = retryPhrase?.text ?? 'I can’t promise Thursday without risking the quality.';
+  const activePhraseDisplay =
+    retryPhrase?.text ?? 'I can’t\npromise\nThursday\nwithout\nrisking the\nquality.';
+  const effectiveGuideLevel: GuideLevel = audio.isRecording ? 0 : guideLevel;
+  const guideStatus = audio.isRecording
+    ? 'Guide off. Only your voice is recording.'
+    : guideSpeaking
+      ? `Quiet Coach is playing at ${guideLevel}%. It stops before recording.`
+      : 'Guide off. Your voice stays on this device.';
 
   useEffect(() => () => {
     void Speech.stop();
@@ -233,7 +254,8 @@ export default function RehearseScreen() {
   }
 
   return (
-    <View style={[styles.frame, { height: frame.h, width: frame.w }]} testID="rehearse-frame">
+    <SafeAreaView edges={['top', 'bottom']} style={styles.safeFrame}>
+      <View style={[styles.frame, { height: frame.h, width: frame.w }]} testID="rehearse-frame">
       <View
         style={[styles.railTop, { height: y(899), left: x(137), width: x(28) }]}
       >
@@ -292,7 +314,7 @@ export default function RehearseScreen() {
       <Text style={[styles.handoff, { fontSize: type(22), left: x(210), lineHeight: type(29), top: y(156) }]}>
         {audio.isRecording
           ? 'SOLO TAKE  /  GUIDE 0%  →  RECORDING'
-          : `HANDOFF  /  QUIET COACH ${guideLevel}%  →  YOUR TURN`}
+          : `${isRetry ? 'RETRY' : 'HANDOFF'}  /  QUIET COACH ${guideLevel}%  →  YOUR TURN`}
       </Text>
 
       <View style={[styles.indexOne, { left: x(55), top: y(246) }]}>
@@ -301,6 +323,7 @@ export default function RehearseScreen() {
       </View>
 
       <Animated.Text
+        accessibilityLabel={activePhraseText}
         accessibilityRole="header"
         style={[
           styles.activePhrase,
@@ -318,7 +341,7 @@ export default function RehearseScreen() {
           },
         ]}
       >
-        {'I can’t\npromise\nThursday\nwithout\nrisking the\nquality.'}
+        {activePhraseDisplay}
       </Animated.Text>
 
       <View style={[styles.progressDots, { left: x(222), top: y(906) }]}>
@@ -331,26 +354,40 @@ export default function RehearseScreen() {
         accessibilityHint="Plays or stops the low-volume English guide"
         accessibilityLabel={guideSpeaking ? 'Stop Quiet Coach' : 'Hear Quiet Coach'}
         accessibilityRole="button"
+        accessibilityState={{ disabled: audio.isRecording || busy }}
+        disabled={audio.isRecording || busy}
+        hitSlop={16}
         onPress={playQuietCoach}
-        style={[styles.indexTwo, { left: x(55), top: y(887) }]}
+        style={[styles.indexTwo, { left: x(55), opacity: audio.isRecording || busy ? 0.45 : 1, top: y(887) }]}
       >
         <Text style={[styles.indexTextActive, { fontSize: type(31), lineHeight: type(36) }]}>02</Text>
         <Ionicons color={COBALT} name={guideSpeaking ? 'stop' : 'play'} size={type(27)} />
       </Pressable>
 
-      <View style={[styles.indexThree, { left: x(55), top: y(995) }]}>
-        <Text style={[styles.indexText, { fontSize: type(31), lineHeight: type(36) }]}>03</Text>
-        <View style={[styles.indexHairline, { marginLeft: x(14), width: x(34) }]} />
-      </View>
+      {!isRetry ? (
+        <>
+          <View style={[styles.indexThree, { left: x(55), top: y(995) }]}>
+            <Text style={[styles.indexText, { fontSize: type(31), lineHeight: type(36) }]}>03</Text>
+            <View style={[styles.indexHairline, { marginLeft: x(14), width: x(34) }]} />
+          </View>
 
-      <Text
-        style={[
-          styles.nextPhrase,
-          { fontSize: type(61), left: x(209), lineHeight: type(68), top: y(992), width: x(432) },
-        ]}
-      >
-        {retryPhrase ? retryPhrase.text : 'I can deliver a\nreliable version\nby Friday.'}
-      </Text>
+          <Text
+            style={[
+              styles.nextPhrase,
+              { fontSize: type(61), left: x(209), lineHeight: type(68), top: y(992), width: x(432) },
+            ]}
+          >
+            {'I can deliver a\nreliable version\nby Friday.'}
+          </Text>
+        </>
+      ) : (
+        <Text
+          accessibilityLabel="Retry only the highlighted moment"
+          style={[styles.retryCue, { fontSize: type(24), left: x(209), lineHeight: type(32), top: y(1015) }]}
+        >
+          ONE PHRASE  /  ONE CLEANER TAKE
+        </Text>
+      )}
 
       <View style={[styles.splice, { height: y(29), left: x(137), top: y(1285), width: x(27) }]} />
       <View style={{ left: x(160), position: 'absolute', top: y(1292) }}>
@@ -407,11 +444,13 @@ export default function RehearseScreen() {
           <Pressable
             accessibilityLabel={`Set guide to ${level} percent`}
             accessibilityRole="button"
+            accessibilityState={{ disabled: audio.isRecording || busy, selected: effectiveGuideLevel === level }}
+            disabled={audio.isRecording || busy}
             key={level}
             onPress={() => setGuideLevel(level as GuideLevel)}
-            style={[styles.guideButton, { borderLeftWidth: index === 0 ? 0 : StyleSheet.hairlineWidth, width: x(183) }]}
+            style={[styles.guideButton, { borderLeftWidth: index === 0 ? 0 : StyleSheet.hairlineWidth, opacity: audio.isRecording && level !== 0 ? 0.45 : 1, width: x(183) }]}
           >
-            <Text style={[styles.controlText, { color: guideLevel === level ? COBALT_LIGHT : INK, fontSize: type(level === 15 ? 28 : 24.5) }]}>{level}%</Text>
+            <Text style={[styles.controlText, { color: effectiveGuideLevel === level ? COBALT_LIGHT : INK, fontSize: type(level === 15 ? 28 : 24.5) }]}>{level}%</Text>
           </Pressable>
         ))}
         <Pressable accessibilityLabel="Playback speed 0.9 times" accessibilityRole="button" style={[styles.speedButton, { borderLeftWidth: StyleSheet.hairlineWidth }]}>
@@ -424,9 +463,10 @@ export default function RehearseScreen() {
           <MaterialCommunityIcons color={INK} name="shield-outline" size={type(51)} style={styles.shieldIcon} />
           <Ionicons color={INK} name="lock-closed" size={type(15)} style={styles.privacyLock} />
         </View>
-        <Text style={[styles.privacyCopy, { fontSize: type(24), lineHeight: type(32), marginLeft: x(20) }]}>Guide off. Your voice stays on this device.</Text>
+        <Text accessibilityLiveRegion="polite" style={[styles.privacyCopy, { fontSize: type(24), lineHeight: type(32), marginLeft: x(20) }]}>{guideStatus}</Text>
       </View>
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -462,6 +502,8 @@ const styles = StyleSheet.create({
   railTurn: { backgroundColor: COBALT, position: 'absolute' },
   reelPlate: { left: 0, position: 'absolute', top: 0 },
   reelPlateFrame: { left: 0, overflow: 'hidden', position: 'absolute', top: 0 },
+  retryCue: { color: ORANGE, fontFamily: 'GothicA1_600SemiBold', letterSpacing: 1.1, position: 'absolute' },
+  safeFrame: { backgroundColor: CHALK, flex: 1 },
   speedButton: { alignItems: 'center', borderLeftColor: '#b4acb4', flex: 1, justifyContent: 'center' },
   shieldIcon: { transform: [{ scaleX: 0.86 }] },
   splice: { backgroundColor: ORANGE, position: 'absolute', zIndex: 4 },

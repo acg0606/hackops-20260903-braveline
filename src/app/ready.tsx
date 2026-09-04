@@ -43,6 +43,7 @@ export default function ReadyScreen() {
   const audio = useBraveLineAudio();
   const [deleted, setDeleted] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmRetry, setConfirmRetry] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(() =>
     firstParam(params.saveWarning) === 'local-metadata-not-saved'
@@ -96,9 +97,9 @@ export default function ReadyScreen() {
         return;
       }
 
+      setDeleted(true);
       const deletedSession = await braveLineSessionStore.clear();
       setConfirmDelete(false);
-      setDeleted(true);
       setNotice(
         deletedSession.ok
           ? 'Take deleted from this device.'
@@ -114,12 +115,53 @@ export default function ReadyScreen() {
     }
   }
 
+  async function replaceWithRetry() {
+    if (!take || busy) return;
+    setBusy(true);
+    setNotice(null);
+
+    try {
+      const deletedAudio = await audio.deleteTake(take);
+      if (!deletedAudio.ok) {
+        setConfirmRetry(false);
+        setNotice(
+          `Retry did not start because the current take could not be removed. ${deletedAudio.userMessage}`,
+        );
+        return;
+      }
+
+      const deletedSession = await braveLineSessionStore.clear();
+      const retryPhrase = getConfiguredRetryPhrase(IMPOSSIBLE_DEADLINE_SCENARIO);
+      router.replace({
+        pathname: '/rehearse',
+        params: {
+          mode: 'retry',
+          phraseId: retryPhrase.id,
+          ...(deletedSession.ok ? {} : { cleanupWarning: 'stale-session-metadata' }),
+        },
+      } as Href);
+    } catch {
+      setConfirmRetry(false);
+      setNotice(
+        'Retry did not start because BraveLine could not verify removal of the current local take.',
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
   function retryMoment() {
-    const retryPhrase = getConfiguredRetryPhrase(IMPOSSIBLE_DEADLINE_SCENARIO);
-    router.replace({
-      pathname: '/rehearse',
-      params: { mode: 'retry', phraseId: retryPhrase.id },
-    } as Href);
+    setConfirmDelete(false);
+    setConfirmRetry(true);
+  }
+
+  function cancelRetry() {
+    setConfirmRetry(false);
+  }
+
+  function openDeleteConfirmation() {
+    setConfirmRetry(false);
+    setConfirmDelete(true);
   }
 
   return (
@@ -204,13 +246,48 @@ export default function ReadyScreen() {
               </View>
               <PrimaryAction
                 accessibilityHint="Returns to Solo with only the highlighted clause"
+                disabled={confirmRetry}
                 icon="replay"
                 label="Retry this moment"
                 onPress={retryMoment}
                 testID="ready-retry"
               />
 
-              {!confirmDelete ? (
+              {confirmRetry ? (
+                <View accessibilityLiveRegion="polite" style={styles.deleteConfirm}>
+                  <InkText style={styles.deleteTitle} weight="bold">
+                    Replace this local take?
+                  </InkText>
+                  <InkText style={styles.deleteCopy}>
+                    BraveLine will permanently remove the current audio before opening a one-phrase retry. This cannot be undone.
+                  </InkText>
+                  <View style={styles.confirmActions}>
+                    <Pressable
+                      accessibilityLabel="Keep my current take"
+                      accessibilityRole="button"
+                      disabled={busy}
+                      onPress={cancelRetry}
+                      style={({ pressed }) => [styles.confirmButton, pressed && styles.confirmPressed]}
+                    >
+                      <InkText style={styles.confirmLabel} weight="semibold">
+                        Keep it
+                      </InkText>
+                    </Pressable>
+                    <Pressable
+                      accessibilityLabel="Permanently delete current take and start phrase retry"
+                      accessibilityRole="button"
+                      accessibilityState={{ busy }}
+                      disabled={busy}
+                      onPress={replaceWithRetry}
+                      style={({ pressed }) => [styles.deleteButton, pressed && styles.deletePressed]}
+                    >
+                      <InkText style={styles.deleteButtonLabel} weight="bold">
+                        {busy ? 'Replacing…' : 'Delete & retry'}
+                      </InkText>
+                    </Pressable>
+                  </View>
+                </View>
+              ) : !confirmDelete ? (
                 <View style={styles.secondaryActions}>
                   <OutlineAction
                     accessibilityHint="Opens an honest local preview of advanced practice"
@@ -223,7 +300,7 @@ export default function ReadyScreen() {
                     accessibilityHint="Asks for confirmation before removing the local take"
                     icon="delete-outline"
                     label="Delete now"
-                    onPress={() => setConfirmDelete(true)}
+                    onPress={openDeleteConfirmation}
                     testID="ready-delete"
                   />
                 </View>

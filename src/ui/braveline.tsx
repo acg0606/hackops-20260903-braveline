@@ -13,6 +13,7 @@ import {
   StyleSheet,
   Text,
   type TextProps,
+  useColorScheme,
   View,
   type ViewStyle,
 } from 'react-native';
@@ -31,7 +32,23 @@ export const palette = {
   success: '#17694B',
 } as const;
 
+export type BravePalette = { [Key in keyof typeof palette]: string };
+
+const darkPalette: BravePalette = {
+  chalk: '#17111D',
+  chalkMuted: '#2B2331',
+  aubergine: '#F8F1FB',
+  aubergineSoft: '#CFC3D4',
+  cobalt: '#79A7FF',
+  cobaltPressed: '#5A8DEB',
+  orange: '#FF8A52',
+  white: '#FFFFFF',
+  line: '#5A4E60',
+  success: '#75D8AC',
+};
+
 const FontContext = createContext(false);
+const ThemeContext = createContext<BravePalette>(palette);
 
 type InkTextProps = TextProps & {
   weight?: 'regular' | 'medium' | 'semibold' | 'bold';
@@ -44,6 +61,16 @@ const fontFamilies = {
   bold: 'GothicA1_700Bold',
 } as const;
 
+export function BraveThemeProvider({ children }: PropsWithChildren) {
+  const scheme = useColorScheme();
+  const colors = scheme === 'dark' ? darkPalette : palette;
+  return <ThemeContext.Provider value={colors}>{children}</ThemeContext.Provider>;
+}
+
+export function useBraveTheme() {
+  return useContext(ThemeContext);
+}
+
 export function BraveCanvas({ children }: PropsWithChildren) {
   const [fontsLoaded] = useFonts({
     GothicA1_400Regular,
@@ -51,10 +78,11 @@ export function BraveCanvas({ children }: PropsWithChildren) {
     GothicA1_600SemiBold,
     GothicA1_700Bold,
   });
+  const colors = useBraveTheme();
 
   return (
     <FontContext.Provider value={fontsLoaded}>
-      <SafeAreaView edges={['top', 'bottom']} style={styles.canvas}>
+      <SafeAreaView edges={['top', 'bottom']} style={[styles.canvas, { backgroundColor: colors.chalk }]}>
         {children}
       </SafeAreaView>
     </FontContext.Provider>
@@ -63,14 +91,32 @@ export function BraveCanvas({ children }: PropsWithChildren) {
 
 export function InkText({ weight = 'regular', style, ...props }: InkTextProps) {
   const fontsLoaded = useContext(FontContext);
+  const colors = useBraveTheme();
+  const requestedColor = StyleSheet.flatten(style)?.color;
+  const semanticColor =
+    requestedColor === palette.aubergineSoft
+      ? colors.aubergineSoft
+      : requestedColor === palette.cobalt
+        ? colors.cobalt
+        : requestedColor === palette.orange
+          ? colors.orange
+          : requestedColor === palette.white
+            ? colors.white
+            : requestedColor === palette.success
+              ? colors.success
+              : requestedColor === palette.aubergine || requestedColor == null
+                ? colors.aubergine
+                : requestedColor;
   return (
     <Text
       {...props}
       maxFontSizeMultiplier={1.3}
       style={[
         styles.ink,
+        { color: colors.aubergine },
         fontsLoaded ? { fontFamily: fontFamilies[weight] } : undefined,
         style,
+        { color: semanticColor },
       ]}
     />
   );
@@ -83,8 +129,9 @@ type TopBarProps = {
 };
 
 export function TopBar({ label, meta, onBack }: TopBarProps) {
+  const colors = useBraveTheme();
   return (
-    <View style={styles.topBar}>
+    <View style={[styles.topBar, { borderBottomColor: colors.line }]}>
       {onBack ? (
         <Pressable
           accessibilityHint="Returns to the previous screen"
@@ -94,18 +141,18 @@ export function TopBar({ label, meta, onBack }: TopBarProps) {
           onPress={onBack}
           style={({ pressed }) => [styles.backButton, pressed && styles.quietPressed]}
         >
-          <MaterialCommunityIcons color={palette.aubergine} name="arrow-left" size={30} />
+          <MaterialCommunityIcons color={colors.aubergine} name="arrow-left" size={30} />
         </Pressable>
       ) : (
-        <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={styles.brandMark}>
-          <View style={styles.brandMarkCore} />
+        <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[styles.brandMark, { borderColor: colors.cobalt }]}>
+          <View style={[styles.brandMarkCore, { backgroundColor: colors.orange }]} />
         </View>
       )}
       <InkText accessibilityRole="header" style={styles.topLabel} weight="semibold">
         {label}
       </InkText>
       {meta ? (
-        <InkText style={styles.topMeta} weight="medium">
+        <InkText style={[styles.topMeta, { color: colors.aubergineSoft }]} weight="medium">
           {meta}
         </InkText>
       ) : null}
@@ -120,9 +167,10 @@ type TapeRailProps = {
 };
 
 export function TapeRail({ active, labels = ['PREPARE', 'REHEARSE', 'READY'], style }: TapeRailProps) {
+  const colors = useBraveTheme();
   return (
     <View accessibilityLabel={`Step ${active} of 3, ${labels[active - 1]}`} style={[styles.rail, style]}>
-      <View style={styles.railLine} />
+      <View style={[styles.railLine, { backgroundColor: colors.cobalt }]} />
       {labels.map((label, index) => {
         const step = (index + 1) as 1 | 2 | 3;
         const isActive = step === active;
@@ -132,13 +180,14 @@ export function TapeRail({ active, labels = ['PREPARE', 'REHEARSE', 'READY'], st
             <View
               style={[
                 styles.railNode,
-                isComplete && styles.railNodeComplete,
-                isActive && styles.railNodeActive,
+                { backgroundColor: colors.chalk },
+                isComplete && [styles.railNodeComplete, { backgroundColor: colors.cobalt, borderColor: colors.chalk }],
+                isActive && [styles.railNodeActive, { backgroundColor: colors.orange, borderColor: colors.chalk }],
               ]}
             />
             <InkText
               importantForAccessibility="no"
-              style={[styles.railNumber, isActive && styles.railNumberActive]}
+              style={[styles.railNumber, { color: colors.aubergineSoft }, isActive && [styles.railNumberActive, { color: colors.cobalt }]]}
               weight={isActive ? 'bold' : 'medium'}
             >
               {String(step).padStart(2, '0')}
@@ -167,6 +216,7 @@ export function PrimaryAction({
   onPress,
   testID,
 }: ActionProps) {
+  const colors = useBraveTheme();
   return (
     <Pressable
       accessibilityHint={accessibilityHint}
@@ -178,15 +228,16 @@ export function PrimaryAction({
       testID={testID}
       style={({ pressed }) => [
         styles.primaryAction,
-        pressed && !disabled && styles.primaryPressed,
+        { backgroundColor: colors.cobalt },
+        pressed && !disabled && [styles.primaryPressed, { backgroundColor: colors.cobaltPressed }],
         disabled && styles.disabled,
       ]}
     >
-      <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={styles.splice} />
+      <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[styles.splice, { backgroundColor: colors.orange }]} />
       <InkText style={styles.primaryLabel} weight="bold">
         {label}
       </InkText>
-      <MaterialCommunityIcons color={palette.white} name={icon} size={26} />
+      <MaterialCommunityIcons color={colors.white} name={icon} size={26} />
     </Pressable>
   );
 }
@@ -199,6 +250,7 @@ export function OutlineAction({
   onPress,
   testID,
 }: ActionProps) {
+  const colors = useBraveTheme();
   return (
     <Pressable
       accessibilityHint={accessibilityHint}
@@ -210,11 +262,12 @@ export function OutlineAction({
       testID={testID}
       style={({ pressed }) => [
         styles.outlineAction,
-        pressed && !disabled && styles.outlinePressed,
+        { borderColor: colors.aubergine },
+        pressed && !disabled && [styles.outlinePressed, { backgroundColor: colors.chalkMuted }],
         disabled && styles.disabled,
       ]}
     >
-      <MaterialCommunityIcons color={palette.aubergine} name={icon} size={23} />
+      <MaterialCommunityIcons color={colors.aubergine} name={icon} size={23} />
       <InkText style={styles.outlineLabel} weight="semibold">
         {label}
       </InkText>
@@ -223,19 +276,22 @@ export function OutlineAction({
 }
 
 export function PrivacyNote({ children }: PropsWithChildren) {
+  const colors = useBraveTheme();
   return (
     <View accessibilityRole="summary" style={styles.privacyNote}>
-      <MaterialCommunityIcons color={palette.aubergine} name="shield-lock-outline" size={23} />
+      <MaterialCommunityIcons color={colors.aubergine} name="shield-lock-outline" size={23} />
       <InkText style={styles.privacyText}>{children}</InkText>
     </View>
   );
 }
 
 export function Rule({ orange = false }: { orange?: boolean }) {
-  return <View accessibilityElementsHidden style={[styles.rule, orange && styles.orangeRule]} />;
+  const colors = useBraveTheme();
+  return <View accessibilityElementsHidden style={[styles.rule, { backgroundColor: orange ? colors.orange : colors.line }, orange && styles.orangeRule]} />;
 }
 
 export function Waveform({ muted = false }: { muted?: boolean }) {
+  const colors = useBraveTheme();
   const bars = [8, 18, 31, 15, 24, 44, 19, 33, 12, 27, 51, 25, 16, 37, 22, 42, 18, 29, 11];
   return (
     <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={styles.waveform}>
@@ -245,8 +301,8 @@ export function Waveform({ muted = false }: { muted?: boolean }) {
           style={[
             styles.waveBar,
             { height },
-            muted ? styles.waveBarMuted : undefined,
-            index === 10 ? styles.waveBarAccent : undefined,
+            { backgroundColor: muted ? colors.line : colors.cobalt },
+            index === 10 ? [styles.waveBarAccent, { backgroundColor: colors.orange }] : undefined,
           ]}
         />
       ))}

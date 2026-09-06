@@ -25,15 +25,9 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { getScenarioPhrase, IMPOSSIBLE_DEADLINE_SCENARIO } from '@/domain/scenarios';
 import { braveLineSessionStore, useBraveLineAudio } from '@/services';
+import { type BravePalette, useBraveTheme } from '@/ui/braveline';
 
 const reelPlate = require('../../assets/plates/reel-emblem.png');
-
-const INK = '#251438';
-const COBALT = '#143cb2';
-const COBALT_LIGHT = '#1e58c0';
-const CHALK = '#f8f8e9';
-const ORANGE = '#ff6418';
-const QUIET = '#968999';
 
 const waveform = [
   5, 7, 14, 29, 19, 7, 34, 49, 68, 42, 22, 31, 14, 55, 38, 72, 18, 91, 49,
@@ -46,6 +40,8 @@ type GuideLevel = 0 | 15 | 25;
 
 export default function RehearseScreen() {
   const router = useRouter();
+  const colors = useBraveTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const params = useLocalSearchParams<{
     cleanupWarning?: string;
     mode?: string;
@@ -82,6 +78,7 @@ export default function RehearseScreen() {
       w: width,
     };
   }, [height, insets.bottom, insets.top, width]);
+  const isExpanded = width >= 720 || width > height;
 
   const x = (value: number) => value * frame.sx;
   const y = (value: number) => value * frame.sy;
@@ -253,6 +250,118 @@ export default function RehearseScreen() {
     return <View style={styles.loadingFrame} testID="rehearse-loading" />;
   }
 
+  if (isExpanded) {
+    return (
+      <SafeAreaView edges={['top', 'bottom']} style={styles.safeFrame}>
+        <View style={styles.expandedHeader}>
+          <Pressable
+            accessibilityLabel="Back to scenario"
+            accessibilityRole="button"
+            disabled={audio.isRecording || busy}
+            hitSlop={12}
+            onPress={() => router.replace('/prepare')}
+            style={[styles.expandedBack, { opacity: audio.isRecording || busy ? 0.35 : 1 }]}
+          >
+            <Ionicons color={colors.aubergine} name="arrow-back" size={30} />
+          </Pressable>
+          <Text maxFontSizeMultiplier={1.3} style={styles.expandedMeta}>SET A BOUNDARY</Text>
+          <Text maxFontSizeMultiplier={1.3} style={styles.expandedMeta}>
+            {audio.isRecording ? `${Math.max(1, Math.ceil(audio.recordingDurationMs / 1000))}s SOLO TAKE` : '1:20 PRACTICE'}
+          </Text>
+        </View>
+
+        <View style={styles.expandedBody} testID="rehearse-expanded-frame">
+          <View style={styles.expandedScriptPane}>
+            <Text maxFontSizeMultiplier={1.3} style={styles.expandedHandoff}>
+              {audio.isRecording
+                ? 'SOLO TAKE  /  GUIDE 0%  →  RECORDING'
+                : `${isRetry ? 'RETRY' : 'HANDOFF'}  /  QUIET COACH ${guideLevel}%  →  YOUR TURN`}
+            </Text>
+            <Animated.Text
+              accessibilityLabel={activePhraseText}
+              accessibilityRole="header"
+              maxFontSizeMultiplier={1.3}
+              style={[
+                styles.expandedPhrase,
+                {
+                  opacity: reveal,
+                  transform: [{ translateY: reveal.interpolate({ inputRange: [0, 1], outputRange: [12, 0] }) }],
+                },
+              ]}
+            >
+              {activePhraseText}
+            </Animated.Text>
+            <View style={styles.expandedSplice} />
+            <Text maxFontSizeMultiplier={1.3} style={styles.expandedSpliceLabel}>GUIDE ENDS HERE</Text>
+            <Text maxFontSizeMultiplier={1.3} style={isRetry ? styles.expandedRetry : styles.expandedNext}>
+              {isRetry ? 'One phrase. One cleaner take.' : 'Next: I can deliver a reliable version by Friday.'}
+            </Text>
+          </View>
+
+          <View style={styles.expandedControlPane}>
+            <Animated.View
+              accessibilityLabel="Live microphone level preview"
+              style={[styles.expandedWaveform, { opacity: signal }]}
+            >
+              <View style={styles.waveBaseline} />
+              {waveform.map((bar, index) => (
+                <View key={`${bar}-${index}`} style={[styles.expandedWaveBar, { height: Math.max(6, bar * 0.5) }]} />
+              ))}
+            </Animated.View>
+
+            <Text maxFontSizeMultiplier={1.3} style={styles.expandedGuideLabel}>QUIET COACH</Text>
+            <View style={styles.expandedGuideRow}>
+              {[0, 15, 25].map((level) => (
+                <Pressable
+                  accessibilityLabel={`Set guide to ${level} percent`}
+                  accessibilityRole="button"
+                  accessibilityState={{ disabled: audio.isRecording || busy, selected: effectiveGuideLevel === level }}
+                  disabled={audio.isRecording || busy}
+                  key={level}
+                  onPress={() => setGuideLevel(level as GuideLevel)}
+                  style={[styles.expandedGuideButton, effectiveGuideLevel === level && styles.expandedGuideSelected]}
+                >
+                  <Text maxFontSizeMultiplier={1.3} style={[styles.expandedGuideText, effectiveGuideLevel === level && styles.expandedGuideTextSelected]}>{level}%</Text>
+                </Pressable>
+              ))}
+              <Pressable
+                accessibilityHint="Plays or stops the low-volume English guide"
+                accessibilityLabel={guideSpeaking ? 'Stop Quiet Coach' : 'Hear Quiet Coach'}
+                accessibilityRole="button"
+                disabled={audio.isRecording || busy}
+                onPress={playQuietCoach}
+                style={styles.expandedCoachButton}
+              >
+                <Ionicons color={colors.white} name={guideSpeaking ? 'stop' : 'play'} size={22} />
+                <Text maxFontSizeMultiplier={1.3} style={styles.expandedCoachText}>{guideSpeaking ? 'STOP GUIDE' : 'HEAR GUIDE'}</Text>
+              </Pressable>
+            </View>
+
+            <Pressable
+              accessibilityHint="Starts a private solo recording"
+              accessibilityLabel={audio.isRecording ? 'Stop and review my take' : 'Start my take'}
+              accessibilityRole="button"
+              disabled={busy}
+              onPress={handleTake}
+              style={({ pressed }) => [styles.expandedTakeButton, { opacity: pressed ? 0.9 : 1 }]}
+            >
+              <MaterialCommunityIcons color={colors.white} name={audio.isRecording ? 'stop' : 'microphone-outline'} size={30} />
+              <Text maxFontSizeMultiplier={1.3} style={styles.expandedTakeLabel}>
+                {busy ? 'PREPARING…' : audio.isRecording ? 'STOP & REVIEW' : 'START MY TAKE'}
+              </Text>
+            </Pressable>
+
+            {notice ? <Text accessibilityLiveRegion="polite" maxFontSizeMultiplier={1.3} style={styles.expandedNotice}>{notice}</Text> : null}
+            <View style={styles.expandedPrivacy}>
+              <MaterialCommunityIcons color={colors.aubergine} name="shield-lock-outline" size={26} />
+              <Text accessibilityLiveRegion="polite" maxFontSizeMultiplier={1.3} style={styles.expandedPrivacyText}>{guideStatus}</Text>
+            </View>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView edges={['top', 'bottom']} style={styles.safeFrame}>
       <View style={[styles.frame, { height: frame.h, width: frame.w }]} testID="rehearse-frame">
@@ -303,7 +412,7 @@ export default function RehearseScreen() {
           { height: y(54), left: x(30), opacity: audio.isRecording || busy ? 0.35 : 1, top: y(30), width: x(56) },
         ]}
       >
-        <Ionicons color={INK} name="arrow-back" size={type(54)} />
+        <Ionicons color={colors.aubergine} name="arrow-back" size={type(54)} />
       </Pressable>
 
       <Text style={[styles.meta, { fontSize: type(27), left: x(210), lineHeight: type(34), top: y(42) }]}>SET A BOUNDARY</Text>
@@ -361,7 +470,7 @@ export default function RehearseScreen() {
         style={[styles.indexTwo, { left: x(55), opacity: audio.isRecording || busy ? 0.45 : 1, top: y(887) }]}
       >
         <Text style={[styles.indexTextActive, { fontSize: type(31), lineHeight: type(36) }]}>02</Text>
-        <Ionicons color={COBALT} name={guideSpeaking ? 'stop' : 'play'} size={type(27)} />
+        <Ionicons color={colors.cobalt} name={guideSpeaking ? 'stop' : 'play'} size={type(27)} />
       </Pressable>
 
       {!isRetry ? (
@@ -450,7 +559,7 @@ export default function RehearseScreen() {
             onPress={() => setGuideLevel(level as GuideLevel)}
             style={[styles.guideButton, { borderLeftWidth: index === 0 ? 0 : StyleSheet.hairlineWidth, opacity: audio.isRecording && level !== 0 ? 0.45 : 1, width: x(183) }]}
           >
-            <Text style={[styles.controlText, { color: effectiveGuideLevel === level ? COBALT_LIGHT : INK, fontSize: type(level === 15 ? 28 : 24.5) }]}>{level}%</Text>
+            <Text style={[styles.controlText, { color: effectiveGuideLevel === level ? colors.cobalt : colors.aubergine, fontSize: type(level === 15 ? 28 : 24.5) }]}>{level}%</Text>
           </Pressable>
         ))}
         <Pressable accessibilityLabel="Playback speed 0.9 times" accessibilityRole="button" style={[styles.speedButton, { borderLeftWidth: StyleSheet.hairlineWidth }]}>
@@ -460,8 +569,8 @@ export default function RehearseScreen() {
 
       <View style={[styles.privacy, { height: y(95), left: x(49), top: y(1721) }]}>
         <View style={[styles.privacyGlyph, { height: type(51), width: type(51) }]}>
-          <MaterialCommunityIcons color={INK} name="shield-outline" size={type(51)} style={styles.shieldIcon} />
-          <Ionicons color={INK} name="lock-closed" size={type(15)} style={styles.privacyLock} />
+          <MaterialCommunityIcons color={colors.aubergine} name="shield-outline" size={type(51)} style={styles.shieldIcon} />
+          <Ionicons color={colors.aubergine} name="lock-closed" size={type(15)} style={styles.privacyLock} />
         </View>
         <Text accessibilityLiveRegion="polite" style={[styles.privacyCopy, { fontSize: type(24), lineHeight: type(32), marginLeft: x(20) }]}>{guideStatus}</Text>
       </View>
@@ -470,49 +579,78 @@ export default function RehearseScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  activePhrase: { color: INK, fontFamily: 'GothicA1_700Bold', letterSpacing: -3.1, position: 'absolute' },
+function createStyles(colors: BravePalette) {
+  return StyleSheet.create({
+  activePhrase: { color: colors.aubergine, fontFamily: 'GothicA1_700Bold', letterSpacing: -3.1, position: 'absolute' },
   backButton: { alignItems: 'center', justifyContent: 'center', position: 'absolute', zIndex: 5 },
-  buttonRail: { backgroundColor: COBALT_LIGHT, position: 'absolute', top: 0 },
-  controlRow: { alignItems: 'stretch', borderBottomColor: '#8b8290', borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', left: 0, position: 'absolute' },
-  controlText: { color: INK, fontFamily: 'GothicA1_500Medium', letterSpacing: 0.7 },
-  frame: { backgroundColor: CHALK, overflow: 'hidden', position: 'relative' },
-  guideButton: { alignItems: 'center', borderLeftColor: '#b4acb4', justifyContent: 'center' },
-  handoff: { color: INK, fontFamily: 'GothicA1_500Medium', letterSpacing: 1.1, position: 'absolute' },
-  indexHairline: { backgroundColor: INK, height: StyleSheet.hairlineWidth },
+  buttonRail: { backgroundColor: colors.cobalt, position: 'absolute', top: 0 },
+  controlRow: { alignItems: 'stretch', borderBottomColor: colors.line, borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', left: 0, position: 'absolute' },
+  controlText: { color: colors.aubergine, fontFamily: 'GothicA1_500Medium', letterSpacing: 0.7 },
+  frame: { backgroundColor: colors.chalk, overflow: 'hidden', position: 'relative' },
+  guideButton: { alignItems: 'center', borderLeftColor: colors.line, justifyContent: 'center' },
+  handoff: { color: colors.aubergine, fontFamily: 'GothicA1_500Medium', letterSpacing: 1.1, position: 'absolute' },
+  indexHairline: { backgroundColor: colors.aubergine, height: StyleSheet.hairlineWidth },
   indexOne: { alignItems: 'center', flexDirection: 'row', position: 'absolute' },
-  indexText: { color: INK, fontFamily: 'GothicA1_500Medium' },
-  indexTextActive: { color: COBALT, fontFamily: 'GothicA1_600SemiBold' },
+  indexText: { color: colors.aubergine, fontFamily: 'GothicA1_500Medium' },
+  indexTextActive: { color: colors.cobalt, fontFamily: 'GothicA1_600SemiBold' },
   indexThree: { alignItems: 'center', flexDirection: 'row', position: 'absolute' },
   indexTwo: { alignItems: 'center', flexDirection: 'row', gap: 5, position: 'absolute' },
-  loadingFrame: { backgroundColor: CHALK, flex: 1 },
-  meta: { color: INK, fontFamily: 'GothicA1_500Medium', letterSpacing: 1.2, position: 'absolute' },
-  nextPhrase: { color: QUIET, fontFamily: 'GothicA1_400Regular', letterSpacing: -1, position: 'absolute' },
-  notice: { color: ORANGE, fontFamily: 'GothicA1_500Medium', position: 'absolute' },
+  loadingFrame: { backgroundColor: colors.chalk, flex: 1 },
+  meta: { color: colors.aubergine, fontFamily: 'GothicA1_500Medium', letterSpacing: 1.2, position: 'absolute' },
+  nextPhrase: { color: colors.aubergineSoft, fontFamily: 'GothicA1_400Regular', letterSpacing: -1, position: 'absolute' },
+  notice: { color: colors.orange, fontFamily: 'GothicA1_500Medium', position: 'absolute' },
   privacy: { alignItems: 'center', flexDirection: 'row', position: 'absolute' },
-  privacyCopy: { color: INK, fontFamily: 'GothicA1_400Regular' },
+  privacyCopy: { color: colors.aubergine, fontFamily: 'GothicA1_400Regular' },
   privacyGlyph: { alignItems: 'center', justifyContent: 'center' },
   privacyLock: { position: 'absolute', transform: [{ scaleX: 0.78 }, { scaleY: 1.1 }] },
-  progressDot: { backgroundColor: CHALK, borderRadius: 999 },
+  progressDot: { backgroundColor: colors.chalk, borderRadius: 999 },
   progressDots: { alignItems: 'center', flexDirection: 'row', position: 'absolute', zIndex: 3 },
-  quietRail: { backgroundColor: '#aba4ab', position: 'absolute' },
-  railLower: { backgroundColor: COBALT, position: 'absolute' },
-  railTick: { backgroundColor: CHALK, left: 0, position: 'absolute', width: '100%' },
-  railTop: { backgroundColor: COBALT, position: 'absolute' },
-  railTurn: { backgroundColor: COBALT, position: 'absolute' },
+  quietRail: { backgroundColor: colors.aubergineSoft, position: 'absolute' },
+  railLower: { backgroundColor: colors.cobalt, position: 'absolute' },
+  railTick: { backgroundColor: colors.chalk, left: 0, position: 'absolute', width: '100%' },
+  railTop: { backgroundColor: colors.cobalt, position: 'absolute' },
+  railTurn: { backgroundColor: colors.cobalt, position: 'absolute' },
   reelPlate: { left: 0, position: 'absolute', top: 0 },
   reelPlateFrame: { left: 0, overflow: 'hidden', position: 'absolute', top: 0 },
-  retryCue: { color: ORANGE, fontFamily: 'GothicA1_600SemiBold', letterSpacing: 1.1, position: 'absolute' },
-  safeFrame: { backgroundColor: CHALK, flex: 1 },
-  speedButton: { alignItems: 'center', borderLeftColor: '#b4acb4', flex: 1, justifyContent: 'center' },
+  retryCue: { color: colors.orange, fontFamily: 'GothicA1_600SemiBold', letterSpacing: 1.1, position: 'absolute' },
+  safeFrame: { backgroundColor: colors.chalk, flex: 1 },
+  speedButton: { alignItems: 'center', borderLeftColor: colors.line, flex: 1, justifyContent: 'center' },
   shieldIcon: { transform: [{ scaleX: 0.86 }] },
-  splice: { backgroundColor: ORANGE, position: 'absolute', zIndex: 4 },
-  spliceLabel: { color: ORANGE, fontFamily: 'GothicA1_500Medium', letterSpacing: 1.1, position: 'absolute' },
-  spliceLead: { backgroundColor: ORANGE, height: 2, position: 'absolute' },
-  spliceTriangle: { borderBottomColor: 'transparent', borderRightColor: ORANGE, borderTopColor: 'transparent', height: 0, width: 0 },
-  takeButton: { alignItems: 'center', backgroundColor: '#1339b1', flexDirection: 'row', left: 0, overflow: 'hidden', position: 'absolute' },
-  takeLabel: { color: CHALK, fontFamily: 'GothicA1_700Bold', letterSpacing: 1.2, position: 'absolute' },
-  waveBar: { backgroundColor: COBALT_LIGHT },
-  waveBaseline: { borderColor: COBALT_LIGHT, borderStyle: 'dotted', borderTopWidth: 3, left: 0, position: 'absolute', right: 0, top: '50%' },
+  splice: { backgroundColor: colors.orange, position: 'absolute', zIndex: 4 },
+  spliceLabel: { color: colors.orange, fontFamily: 'GothicA1_500Medium', letterSpacing: 1.1, position: 'absolute' },
+  spliceLead: { backgroundColor: colors.orange, height: 2, position: 'absolute' },
+  spliceTriangle: { borderBottomColor: 'transparent', borderRightColor: colors.orange, borderTopColor: 'transparent', height: 0, width: 0 },
+  takeButton: { alignItems: 'center', backgroundColor: colors.cobaltPressed, flexDirection: 'row', left: 0, overflow: 'hidden', position: 'absolute' },
+  takeLabel: { color: colors.white, fontFamily: 'GothicA1_700Bold', letterSpacing: 1.2, position: 'absolute' },
+  waveBar: { backgroundColor: colors.cobalt },
+  waveBaseline: { borderColor: colors.cobalt, borderStyle: 'dotted', borderTopWidth: 3, left: 0, position: 'absolute', right: 0, top: '50%' },
   waveform: { alignItems: 'center', flexDirection: 'row', justifyContent: 'center', overflow: 'hidden', position: 'absolute' },
-});
+  expandedHeader: { alignItems: 'center', borderBottomColor: colors.line, borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', gap: 16, minHeight: 64, paddingHorizontal: 20 },
+  expandedBack: { alignItems: 'center', height: 48, justifyContent: 'center', width: 48 },
+  expandedMeta: { color: colors.aubergine, flex: 1, fontFamily: 'GothicA1_600SemiBold', fontSize: 13, letterSpacing: 1.2 },
+  expandedBody: { flex: 1, flexDirection: 'row', marginHorizontal: 'auto', maxWidth: 1180, width: '100%' },
+  expandedScriptPane: { borderRightColor: colors.line, borderRightWidth: StyleSheet.hairlineWidth, flex: 1.2, justifyContent: 'center', minWidth: 0, padding: 32 },
+  expandedControlPane: { flex: 1, justifyContent: 'center', minWidth: 0, padding: 28 },
+  expandedHandoff: { color: colors.cobalt, fontFamily: 'GothicA1_600SemiBold', fontSize: 14, letterSpacing: 1.1, marginBottom: 18 },
+  expandedPhrase: { color: colors.aubergine, fontFamily: 'GothicA1_700Bold', fontSize: 45, letterSpacing: -1.5, lineHeight: 52, maxWidth: 620 },
+  expandedSplice: { backgroundColor: colors.orange, height: 7, marginTop: 28, width: 68 },
+  expandedSpliceLabel: { color: colors.orange, fontFamily: 'GothicA1_600SemiBold', fontSize: 12, letterSpacing: 1.1, marginTop: 8 },
+  expandedNext: { color: colors.aubergineSoft, fontFamily: 'GothicA1_400Regular', fontSize: 20, lineHeight: 28, marginTop: 28 },
+  expandedRetry: { color: colors.orange, fontFamily: 'GothicA1_600SemiBold', fontSize: 20, lineHeight: 28, marginTop: 28 },
+  expandedWaveform: { alignItems: 'center', flexDirection: 'row', height: 76, justifyContent: 'center', overflow: 'hidden' },
+  expandedWaveBar: { backgroundColor: colors.cobalt, flex: 1, marginHorizontal: 1, maxWidth: 4, minWidth: 1 },
+  expandedGuideLabel: { color: colors.aubergineSoft, fontFamily: 'GothicA1_600SemiBold', fontSize: 12, letterSpacing: 1.2, marginBottom: 9, marginTop: 18 },
+  expandedGuideRow: { flexDirection: 'row', gap: 8 },
+  expandedGuideButton: { alignItems: 'center', borderColor: colors.line, borderWidth: 1, justifyContent: 'center', minHeight: 52, minWidth: 58, paddingHorizontal: 12 },
+  expandedGuideSelected: { backgroundColor: colors.chalkMuted, borderColor: colors.cobalt },
+  expandedGuideText: { color: colors.aubergine, fontFamily: 'GothicA1_500Medium', fontSize: 14 },
+  expandedGuideTextSelected: { color: colors.cobalt, fontFamily: 'GothicA1_700Bold' },
+  expandedCoachButton: { alignItems: 'center', backgroundColor: colors.cobalt, flex: 1, flexDirection: 'row', gap: 8, justifyContent: 'center', minHeight: 52, paddingHorizontal: 14 },
+  expandedCoachText: { color: colors.white, fontFamily: 'GothicA1_700Bold', fontSize: 13, letterSpacing: 0.7 },
+  expandedTakeButton: { alignItems: 'center', backgroundColor: colors.cobaltPressed, flexDirection: 'row', gap: 12, justifyContent: 'center', marginTop: 18, minHeight: 70, paddingHorizontal: 22 },
+  expandedTakeLabel: { color: colors.white, fontFamily: 'GothicA1_700Bold', fontSize: 19, letterSpacing: 0.8 },
+  expandedNotice: { color: colors.orange, fontFamily: 'GothicA1_500Medium', fontSize: 13, lineHeight: 19, marginTop: 12 },
+  expandedPrivacy: { alignItems: 'center', flexDirection: 'row', gap: 12, marginTop: 18, minHeight: 48 },
+  expandedPrivacyText: { color: colors.aubergine, flex: 1, fontFamily: 'GothicA1_400Regular', fontSize: 13, lineHeight: 19 },
+  });
+}

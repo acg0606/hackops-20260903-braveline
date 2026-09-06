@@ -24,6 +24,7 @@ import {
   Rule,
   TapeRail,
   TopBar,
+  useBraveTheme,
   Waveform,
 } from '@/ui/braveline';
 
@@ -41,6 +42,7 @@ export default function ReadyScreen() {
   const params = useLocalSearchParams<ReadyParams>();
   const router = useRouter();
   const audio = useBraveLineAudio();
+  const colors = useBraveTheme();
   const [deleted, setDeleted] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmRetry, setConfirmRetry] = useState(false);
@@ -204,7 +206,7 @@ export default function ReadyScreen() {
                   testID="ready-play"
                 >
                   <MaterialCommunityIcons
-                    color={palette.white}
+                    color={colors.white}
                     name={audio.isPlaying ? 'pause' : 'play'}
                     size={30}
                   />
@@ -346,8 +348,8 @@ export default function ReadyScreen() {
           )}
 
           {notice ? (
-            <View accessibilityLiveRegion="polite" accessibilityRole="alert" style={styles.notice}>
-              <MaterialCommunityIcons color={palette.aubergine} name="information-outline" size={22} />
+            <View accessibilityLiveRegion="polite" accessibilityRole="alert" style={[styles.notice, { backgroundColor: colors.chalkMuted }]}>
+              <MaterialCommunityIcons color={colors.aubergine} name="information-outline" size={22} />
               <InkText style={styles.noticeText}>{notice}</InkText>
             </View>
           ) : null}

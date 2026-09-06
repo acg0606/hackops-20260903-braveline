@@ -7,9 +7,11 @@ import {
   inspectExpoAudioRecordingFile,
   resolveBraveLineResume,
 } from '@/services';
+import { useBraveTheme } from '@/ui/braveline';
 
 export default function Index() {
   const router = useRouter();
+  const colors = useBraveTheme();
 
   useEffect(() => {
     let active = true;
@@ -47,7 +49,7 @@ export default function Index() {
     };
   }, [router]);
 
-  return <View style={styles.loading} testID="session-resume-loading" />;
+  return <View style={[styles.loading, { backgroundColor: colors.chalk }]} testID="session-resume-loading" />;
 }
 
 const styles = StyleSheet.create({

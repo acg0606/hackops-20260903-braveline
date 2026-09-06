@@ -13,6 +13,7 @@ import {
   Rule,
   TapeRail,
   TopBar,
+  useBraveTheme,
 } from '@/ui/braveline';
 
 const rehearseRoute = '/rehearse' as Href;
@@ -94,9 +95,10 @@ function FactRow({
   label: string;
   value: string;
 }) {
+  const colors = useBraveTheme();
   return (
     <View style={styles.factRow}>
-      <MaterialCommunityIcons color={palette.cobalt} name={icon} size={22} />
+      <MaterialCommunityIcons color={colors.cobalt} name={icon} size={22} />
       <View style={styles.factCopy}>
         <InkText style={styles.factLabel} weight="semibold">
           {label.toUpperCase()}

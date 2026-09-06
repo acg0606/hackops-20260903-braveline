@@ -11,6 +11,7 @@ import {
   PrimaryAction,
   Rule,
   TopBar,
+  useBraveTheme,
 } from '@/ui/braveline';
 
 const prepareRoute = '/prepare' as Href;
@@ -39,6 +40,7 @@ const benefits = [
 
 export default function PlusScreen() {
   const router = useRouter();
+  const colors = useBraveTheme();
 
   return (
     <BraveCanvas>
@@ -48,7 +50,7 @@ export default function PlusScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View accessibilityLabel="Preview only. No purchase is available on this screen." style={styles.previewBand}>
-          <MaterialCommunityIcons color={palette.orange} name="eye-outline" size={22} />
+          <MaterialCommunityIcons color={colors.orange} name="eye-outline" size={22} />
           <InkText style={styles.previewText} weight="semibold">
             PURCHASES OFF — PREVIEW ONLY
           </InkText>
@@ -72,7 +74,7 @@ export default function PlusScreen() {
                 <InkText style={styles.benefitIndex} weight="bold">
                   {benefit.index}
                 </InkText>
-                <MaterialCommunityIcons color={palette.cobalt} name={benefit.icon} size={26} />
+                <MaterialCommunityIcons color={colors.cobalt} name={benefit.icon} size={26} />
               </View>
               <View style={styles.benefitCopy}>
                 <InkText style={styles.benefitTitle} weight="bold">
@@ -117,7 +119,7 @@ export default function PlusScreen() {
         />
 
         <View style={styles.restoreRow}>
-          <MaterialCommunityIcons color={palette.aubergineSoft} name="restore" size={21} />
+          <MaterialCommunityIcons color={colors.aubergineSoft} name="restore" size={21} />
           <InkText style={styles.restoreText}>
             Restore and manage access appear here in live purchase mode.
           </InkText>

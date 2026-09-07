@@ -118,8 +118,17 @@
       "avd": "StudyPebble_API_36"
     },
     {
+      "status": "FACT",
+      "claim": "The configured app icon is 1024x1024, and a native Android API 36 emulator screenshot was captured without a device frame at the submission-requested 1179x2556 dimensions.",
+      "icon": "assets/images/icon.png",
+      "screenshot": "docs/evidence/submission-assets/braveline-android-1179x2556.png",
+      "screenshotBytes": 237640,
+      "screenshotSha256": "6F1F2D26964BE1B2C5443D8FDAEC40E68012B153FBB7F9D5048F05B571C33732",
+      "boundary": "LOCAL_ANDROID_EMULATOR_EVIDENCE_NOT_STORE_RECEIPT"
+    },
+    {
       "status": "HOLD",
-      "claim": "RevenueCat purchase proof, store publication, public demo video, Devpost registration recheck, and Devpost submission are external gates and are not claimed by this manifest."
+      "claim": "RevenueCat purchase proof, store publication, public demo video, final store-build screenshot selection, and Devpost submission are external gates and are not claimed by this manifest. Devpost registration was rechecked live on 2026-09-07 and was already registered."
     }
   ]
 }

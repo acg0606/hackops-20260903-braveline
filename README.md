@@ -50,7 +50,7 @@ The completed native receipt in [`docs/evidence/native-pass-20260904/receipt.md`
 4. Play the verified local file.
 5. Delete the take and confirm that the private file is gone.
 
-The remediation receipt in [`docs/evidence/native-pass-20260904-r2/receipt.md`](docs/evidence/native-pass-20260904-r2/receipt.md) additionally proves Android safe areas, truthful Quiet Coach/recording states, app-restart recovery, confirmed removal before retry, the exact one-phrase retry, a second successful take, and final deletion. Dark mode and 1.3 font-scale layout remain release-hardening work.
+The remediation receipt in [`docs/evidence/native-pass-20260904-r2/receipt.md`](docs/evidence/native-pass-20260904-r2/receipt.md) additionally proves Android safe areas, truthful Quiet Coach/recording states, app-restart recovery, confirmed removal before retry, the exact one-phrase retry, a second successful take, and final deletion. The follow-up UI-hardening evidence proves automatic light/dark theming, portrait rendering, and a two-column landscape rehearsal at system font scale 1.3.
 
 ## Evidence boundaries
 

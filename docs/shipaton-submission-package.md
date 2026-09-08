@@ -8,7 +8,7 @@ BraveLine
 
 ## Tagline
 
-Rehearse a difficult workplace conversation in English with a quiet guide, then speak on your own. Private, repeatable, and built for practice—not accent scores.
+Private rehearsal for difficult workplace conversations
 
 ## Inspiration
 
@@ -20,13 +20,13 @@ Prepare presents a short, synthetic workplace scenario. Quiet Coach reads the sc
 
 Recordings stay in app-private storage. A verified take can resume after the app restarts. The app does not upload rehearsal audio, transcribe it, or score pronunciation, accent, or emotion. Any feedback is explicitly deterministic practice guidance, not an AI assessment of the recording.
 
-BraveLine Plus integrates RevenueCat offerings, entitlement checks, a published paywall, purchase, and restore. The demonstrated configuration is RevenueCat Test Store: the annual purchase and restored `braveline_pro` entitlement are simulated, with no real charge or revenue. An unconfigured checkout remains preview-only instead of pretending a payment succeeded.
+BraveLine Plus integrates RevenueCat offerings, entitlement checks, a published paywall, purchase, and a restore action. An annual RevenueCat Test Store purchase and active `braveline_pro` entitlement were observed on Android, with no real charge or revenue. Successful restore is awaiting fresh device verification after a UI receipt-handling issue was identified. An unconfigured checkout remains preview-only. Custom scenarios, counterpart styles, and rehearsal history are planned Plus features; the current Test Store demonstration does not provide those features or a trial.
 
 ## How we built it
 
 Expo 57, React Native 0.86, TypeScript, Expo Router, Expo Audio, Expo Speech, Expo File System, and RevenueCat React Native Purchases. Audio lifecycle and entitlement decisions live behind testable service boundaries. Android API 36 emulator captures show the implemented product rather than a conceptual mockup.
 
-Codex assisted with implementation, tests, native debugging, documentation, and assembly of the demo from retained emulator captures. The rehearsal logic is deterministic and Quiet Coach uses device text-to-speech. The scenario and original application assets are included in the MIT-licensed source.
+Codex assisted with implementation, tests, native debugging, documentation, and assembly of a 56-second captioned screenshot montage from retained Android emulator evidence. The rehearsal logic is deterministic and Quiet Coach uses device text-to-speech. The scenario and original application assets are included in the MIT-licensed source.
 
 ## Challenges we ran into
 
@@ -37,7 +37,7 @@ Recording state must reflect a real, non-empty private file, not simply a succes
 - 42 automated tests plus TypeScript, zero-warning ESLint, and Expo dependency checks passed in the verified baseline.
 - Native Android evidence covers guide-off recording, local playback, deletion, restart recovery, and exact-phrase retry.
 - Light and dark themes, portrait, and two-column landscape at font scale 1.3 were captured.
-- RevenueCat Test Store purchase and restore were verified on Android with an active entitlement and no real charge.
+- A simulated annual RevenueCat Test Store purchase and active entitlement were observed on Android with no real charge. Restore re-verification remains pending.
 
 ## What we learned
 
@@ -59,5 +59,5 @@ See [README](../README.md) for setup and [native evidence](evidence-manifest.jso
 - RevenueCat project ID: `0b5db614`.
 - Icon: `assets/images/icon.png` (1024×1024).
 - Screenshot: `docs/evidence/submission-assets/braveline-android-1179x2556.png`.
-- Demo: 56-second English Android walkthrough; a public YouTube or Vimeo URL is required before final submission.
+- Local media: 56-second English captioned screenshot montage from retained Android emulator evidence. A submission-suitable demo and verified public YouTube or Vimeo URL are required before final submission.
 - No store date, store URL, growth-fund opt-in, real revenue, or final submission is asserted.

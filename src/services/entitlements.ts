@@ -25,7 +25,9 @@ export interface EntitlementSnapshot {
 
 export type EntitlementAction =
   | 'initialized'
-  | 'paywall-closed'
+  | 'purchased'
+  | 'paywall-cancelled'
+  | 'paywall-not-presented'
   | 'entitlement-verified'
   | 'restored'
   | 'customer-center-opened';
@@ -237,11 +239,23 @@ class RevenueCatEntitlements implements Entitlements {
     if (!ready.ok) return ready;
 
     try {
-      await this.modules!.ui.presentPaywallIfNeeded({
+      const outcome = await this.modules!.ui.presentPaywallIfNeeded({
         requiredEntitlementIdentifier: BRAVELINE_PRO_ENTITLEMENT,
         displayCloseButton: true,
       });
-      return this.refreshFromCustomerInfo('paywall-closed', 'user-mediated');
+      switch (outcome) {
+        case 'PURCHASED':
+          return this.refreshFromCustomerInfo('purchased', 'user-mediated');
+        case 'RESTORED':
+          return this.refreshFromCustomerInfo('restored', 'user-mediated');
+        case 'CANCELLED':
+          return success('paywall-cancelled', 'none', this.state);
+        case 'NOT_PRESENTED':
+          return success('paywall-not-presented', 'none', this.state);
+        default:
+          // ERROR and unrecognized native results must not become purchase receipts.
+          return operationFailure(this.state);
+      }
     } catch {
       return operationFailure(this.state);
     }
@@ -256,7 +270,7 @@ class RevenueCatEntitlements implements Entitlements {
       const isPro = hasActiveEntitlement(info);
       this.state = readySnapshot(isPro);
       return success(
-        isPro ? 'entitlement-verified' : 'restored',
+        'restored',
         isPro ? 'verified-entitlement' : 'user-mediated',
         this.state,
       );
@@ -317,7 +331,7 @@ class RevenueCatEntitlements implements Entitlements {
       const isPro = hasActiveEntitlement(info);
       this.state = readySnapshot(isPro);
       return success(
-        isPro ? 'entitlement-verified' : fallbackAction,
+        isPro && fallbackAction === 'initialized' ? 'entitlement-verified' : fallbackAction,
         isPro ? 'verified-entitlement' : fallbackEffect,
         this.state,
       );
@@ -404,7 +418,7 @@ function operationFailure(current: EntitlementSnapshot): EntitlementActionResult
     reason: 'operation-failed',
     externalEffect: 'unknown',
     userMessage:
-      'The RevenueCat operation could not be verified. No purchase or entitlement is being claimed.',
+      'The RevenueCat operation could not be verified. No new purchase or restore is confirmed. Previously verified access may still be active.',
     snapshot: current,
   };
 }

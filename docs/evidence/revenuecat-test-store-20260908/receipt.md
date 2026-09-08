@@ -9,15 +9,19 @@
 - The published paywall loaded on device with annual and monthly packages and the disclosure `TEST STORE · NO REAL CHARGE`.
 - The RevenueCat Test Store confirmation identified product `yearly` and explicitly described the operation as a test purchase for development.
 - `TEST VALID PURCHASE` completed without a real store or real charge. BraveLine then read back the active `braveline_pro` entitlement and displayed `PLUS VERIFIED — REVENUECAT`.
-- `Restore purchases` completed on the same development build. The UI retained the active entitlement and displayed `Restore completed. BraveLine Plus is active and verified by RevenueCat.` together with `LAST REVENUECAT ACTION · RESTORE`.
+- After `Restore purchases` was selected on the same development build, the UI retained the active entitlement and displayed `Restore completed. BraveLine Plus is active and verified by RevenueCat.` together with `LAST REVENUECAT ACTION · RESTORE`. A subsequent code review found that this UI message did not establish successful completion of the restore operation; see the correction below.
 
 ## Evidence
 
 - `01-plus-ready.png` — initialized native SDK with no entitlement yet.
 - `02-test-store-paywall.png` — RevenueCat paywall rendered on device.
 - `03-purchase-verified.png` — active entitlement immediately after the simulated valid purchase.
-- `04-restore-verified.png` — explicit restore receipt and entitlement readback.
+- `04-restore-verified.png` — retained screenshot of the previous UI restore-success message and active entitlement. The historical filename is preserved; it does not independently prove successful restore.
+
+## Correction — restore re-verification pending
+
+The UI set its restore-success message from `snapshot.isPro` without checking the operation's `ok` result. A failed restore could preserve an already-active entitlement and display the same message. A fresh device run with corrected receipt handling is required before successful restore is claimed. This correction does not invalidate the separately observed `TEST VALID PURCHASE` confirmation and subsequent active entitlement.
 
 ## Boundary
 
-This proves a simulated RevenueCat Test Store purchase and restore on an Android API 36 emulator. It does not prove a Google Play transaction, real revenue, public store release, public video, Next Gen eligibility, or Devpost submission.
+This records an observed simulated annual RevenueCat Test Store purchase and active entitlement on an Android API 36 emulator. Successful restore re-verification is pending. It does not prove a Google Play transaction, real revenue, public store release, public video, Next Gen eligibility, or Devpost submission.

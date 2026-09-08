@@ -1,12 +1,13 @@
 {
   "schemaVersion": 1,
   "generatedAt": "2026-09-07T00:12:55-03:00",
+  "reviewedOn": "2026-09-08",
   "project": "BraveLine",
   "scope": "local-debug-native-evidence",
   "claims": [
     {
       "status": "FACT",
-      "claim": "TypeScript, Vitest, ESLint, Expo dependency checks, and the static web export passed in the canonical workspace.",
+      "claim": "In the historical 2026-09-04 baseline, TypeScript, Vitest, ESLint, Expo dependency checks, and the static web export passed in the canonical workspace.",
       "commands": [
         "pnpm typecheck",
         "pnpm test",
@@ -51,7 +52,7 @@
     },
     {
       "status": "FACT",
-      "claim": "The Plus surface remained preview-only and its trial control was disabled; no purchase was available or attempted.",
+      "claim": "In the 2026-09-04 capture, the Plus surface remained preview-only and its then-labelled trial control was disabled; no purchase was available or attempted. This historical label does not establish an available trial.",
       "evidence": "docs/evidence/native-pass-20260904/07-plus-preview.xml"
     },
     {
@@ -128,7 +129,7 @@
     },
     {
       "status": "FACT",
-      "claim": "An x86_64 Android API 36 development build loaded the published RevenueCat paywall, completed a simulated Test Store annual purchase, read back the active braveline_pro entitlement, and completed restore. The Test Store generated no real charge or revenue.",
+      "claim": "An x86_64 Android API 36 development build loaded the published RevenueCat paywall, completed an observed simulated Test Store annual purchase, and read back the active braveline_pro entitlement. The Test Store generated no real charge or revenue. The historical restore-success screenshot does not independently establish successful restore; the receipt records the subsequent UI-handling correction.",
       "evidence": "docs/evidence/revenuecat-test-store-20260908/receipt.md",
       "apkBytes": 87231377,
       "apkSha256": "BAE3046568A637231D9633F7BB0D887022322D5E6F06A20F7FAF9A8D20B943E4",
@@ -136,16 +137,39 @@
     },
     {
       "status": "FACT",
-      "claim": "A 56-second English Android device walkthrough was assembled from the retained native evidence frames. It covers Prepare, Quiet Coach, recording, Ready, the RevenueCat Test Store paywall, and the explicit restore receipt. It is a local submission asset until a public YouTube or Vimeo URL is verified.",
+      "claim": "The 2026-09-08 receipt-handling correction passed TypeScript and 52 automated tests. These checks do not establish a fresh successful native purchase or restore.",
+      "commands": [
+        "pnpm typecheck",
+        "pnpm test"
+      ],
+      "tests": {
+        "passed": 52,
+        "failed": 0
+      },
+      "boundary": "LOCAL_AUTOMATED_VERIFICATION_NOT_NATIVE_RECEIPT"
+    },
+    {
+      "status": "HOLD",
+      "claim": "Successful restore re-verification is pending. The previous UI could display restore success after an operation failure while retaining an already-active entitlement. A fresh device run with corrected receipt handling is required.",
+      "evidence": "docs/evidence/revenuecat-test-store-20260908/receipt.md"
+    },
+    {
+      "status": "FACT",
+      "claim": "The existing 56-second English video is a captioned screenshot montage assembled from retained Android emulator evidence, not a continuous screen recording. It contains historical Prepare, Quiet Coach, recording, Ready, and RevenueCat paywall captures, plus the previous UI restore-success message that requires re-verification. It has no verified public URL; submission suitability and public hosting remain pending.",
       "evidence": "docs/evidence/submission-assets/braveline-shipaton-demo-20260908.mp4",
       "durationSeconds": 56,
       "resolution": "1080x2340",
       "sha256": "CB525D37787665D2BA41A17A5F5D6C99619232C6670F1EB7866ACA12B65556A9",
-      "boundary": "LOCAL_VIDEO_ASSET_NOT_PUBLIC_VIDEO_RECEIPT"
+      "boundary": "HISTORICAL_SCREENSHOT_MONTAGE_NOT_LIVE_CAPTURE_OR_PUBLIC_VIDEO_RECEIPT"
+    },
+    {
+      "status": "FACT",
+      "claim": "On 2026-09-08 the entrant confirmed active enrollment and supplied an academic email privately. GitHub readback verified the repository as public and MIT-licensed at commit 025f322. Final eligibility review belongs to the organizers; anonymous repository access verification is separate.",
+      "repository": "https://github.com/acg0606/hackops-20260903-braveline"
     },
     {
       "status": "HOLD",
-      "claim": "Next Gen eligibility, public repository access, public demo video, and final Devpost submission remain external gates. Devpost registration was rechecked live on 2026-09-07 and was already registered."
+      "claim": "A submission-suitable public demo video and final Devpost submission receipt remain pending. Devpost registration was rechecked live on 2026-09-07 and was already registered; registration does not establish submission of BraveLine."
     }
   ]
 }

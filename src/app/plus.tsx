@@ -3,7 +3,12 @@ import { type Href, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { createEntitlements, type EntitlementSnapshot } from '@/services';
+import {
+  createEntitlements,
+  entitlementFeedback,
+  type EntitlementFeedback,
+  type EntitlementSnapshot,
+} from '@/services';
 import {
   BraveCanvas,
   InkText,
@@ -25,20 +30,20 @@ const benefits = [
   {
     icon: 'pencil-ruler',
     index: '01',
-    title: 'Write your own scenario',
-    detail: 'Turn tomorrow’s real conversation into a focused rehearsal.',
+    title: 'Planned: custom scenarios',
+    detail: 'A future option to bring your own conversation into rehearsal. Not available in this MVP.',
   },
   {
     icon: 'account-switch-outline',
     index: '02',
-    title: 'Choose the counterpart',
-    detail: 'Practise with a direct, uncertain, or resistant response profile.',
+    title: 'Planned: counterpart profiles',
+    detail: 'A future option to choose response styles. Not available in this MVP.',
   },
   {
     icon: 'timeline-clock-outline',
     index: '03',
-    title: 'Keep rehearsal history',
-    detail: 'Return to prior takes and compare the words you chose — privately.',
+    title: 'Planned: rehearsal history',
+    detail: 'A future option to compare prior rehearsals privately. Not available in this MVP.',
   },
 ] as const;
 
@@ -47,7 +52,7 @@ export default function PlusScreen() {
   const colors = useBraveTheme();
   const [snapshot, setSnapshot] = useState<EntitlementSnapshot>(entitlements.snapshot);
   const [busyAction, setBusyAction] = useState<'paywall' | 'restore' | null>(null);
-  const [verificationReceipt, setVerificationReceipt] = useState<'purchase' | 'restore' | null>(null);
+  const [lastAction, setLastAction] = useState<EntitlementFeedback | null>(null);
 
   const syncSnapshot = useCallback((next: EntitlementSnapshot) => {
     setSnapshot(next);
@@ -65,10 +70,11 @@ export default function PlusScreen() {
 
   const openPaywall = useCallback(async () => {
     setBusyAction('paywall');
+    setLastAction(null);
     try {
       const result = await entitlements.presentPaywall();
       syncSnapshot(result.snapshot);
-      setVerificationReceipt(result.snapshot.isPro ? 'purchase' : null);
+      setLastAction(entitlementFeedback(result));
     } finally {
       setBusyAction(null);
     }
@@ -76,10 +82,11 @@ export default function PlusScreen() {
 
   const restorePurchases = useCallback(async () => {
     setBusyAction('restore');
+    setLastAction(null);
     try {
       const result = await entitlements.restore();
       syncSnapshot(result.snapshot);
-      setVerificationReceipt(result.snapshot.isPro ? 'restore' : null);
+      setLastAction(entitlementFeedback(result));
     } finally {
       setBusyAction(null);
     }
@@ -115,13 +122,13 @@ export default function PlusScreen() {
         </View>
 
         <InkText style={styles.kicker} weight="semibold">
-          AFTER YOUR FIRST REHEARSAL
+          PLUS ROADMAP · NOT YET AVAILABLE
         </InkText>
         <InkText accessibilityRole="header" style={styles.hero} weight="bold">
           More practice. Never a wall.
         </InkText>
         <InkText style={styles.intro}>
-          The complete boundary rehearsal stays free and repeatable. Plus is for people who want to bring more of their own conversations into BraveLine.
+          The complete boundary rehearsal stays free and repeatable. This MVP demonstrates Test Store purchase and restore verification. The Plus features below are planned and are not unlocked by this test.
         </InkText>
         <Rule orange />
 
@@ -146,13 +153,13 @@ export default function PlusScreen() {
 
         <View style={styles.offerBlock}>
           <InkText style={styles.offerLabel} weight="semibold">
-            PLANNED LAUNCH OFFER
+            REVENUECAT TEST STORE
           </InkText>
           <View style={styles.offerLine}>
             <InkText style={styles.offerLarge} weight="bold">
-              7 days
+              No charge
             </InkText>
-            <InkText style={styles.offerCopy}>to explore Plus before a paid plan begins.</InkText>
+            <InkText style={styles.offerCopy}>Simulated purchases for this demo. No paid trial begins.</InkText>
           </View>
           <InkText style={styles.offerFine}>
             {snapshot.disclosure} {purchaseMode ? 'This build uses RevenueCat Test Store only.' : 'Billing details will appear only when RevenueCat is configured.'}
@@ -163,7 +170,7 @@ export default function PlusScreen() {
           accessibilityHint={purchaseMode ? 'Opens the RevenueCat Test Store paywall' : 'Unavailable because this is a local preview'}
           disabled={!purchaseMode || purchaseBusy}
           icon={purchaseMode ? 'rocket-launch-outline' : 'lock-outline'}
-          label={purchaseMode ? (busyAction === 'paywall' ? 'Opening Test Store…' : 'Open Test Store paywall') : 'Start trial — available in purchase mode'}
+          label={purchaseMode ? (busyAction === 'paywall' ? 'Opening Test Store…' : 'Open Test Store paywall') : 'Test Store unavailable in preview'}
           onPress={openPaywall}
           testID={purchaseMode ? 'plus-open-paywall' : 'plus-preview-disabled'}
         />
@@ -189,18 +196,22 @@ export default function PlusScreen() {
           <View accessibilityLiveRegion="polite" style={styles.restoreRow}>
             <MaterialCommunityIcons color={colors.success} name="check-decagram-outline" size={21} />
             <InkText style={[styles.restoreText, { color: colors.success }]} weight="semibold">
-              {verificationReceipt === 'restore'
-                ? 'Restore completed. BraveLine Plus is active and verified by RevenueCat.'
-                : 'BraveLine Plus access is active and verified by RevenueCat.'}
+              BraveLine Plus access is active and verified by RevenueCat.
             </InkText>
           </View>
+        ) : null}
+
+        {lastAction ? (
+          <InkText accessibilityLiveRegion="polite" style={styles.entitlement} testID="plus-action-result">
+            {lastAction.message}
+          </InkText>
         ) : null}
 
         <InkText style={styles.entitlement}>
           ENTITLEMENT · {snapshot.entitlementId.toUpperCase()}
         </InkText>
         <InkText accessibilityLiveRegion="polite" style={styles.entitlement}>
-          LAST REVENUECAT ACTION · {verificationReceipt?.toUpperCase() ?? 'INITIALIZATION'}
+          LAST REVENUECAT ACTION · {busyAction ? 'IN PROGRESS' : lastAction?.label ?? 'INITIALIZATION'}
         </InkText>
       </ScrollView>
     </BraveCanvas>

@@ -55,7 +55,8 @@ The remediation receipt in [`docs/evidence/native-pass-20260904-r2/receipt.md`](
 ## Evidence boundaries
 
 - A passing local build or emulator run proves only local technical behavior.
-- The RevenueCat Test Store is not configured in this repository, and no purchase is claimed.
+- A RevenueCat Test Store project, offering, products, entitlement, and published paywall are configured externally; no SDK key is stored in this repository.
+- The default local checkout remains preview-only until `EXPO_PUBLIC_REVENUECAT_API_KEY` is supplied at runtime, and no purchase or restore is claimed without a device receipt.
 - No public repository, store release, Devpost entry, or Shipaton submission is claimed by this codebase.
 - Release/submission status requires separate receipts from the relevant external services.
 

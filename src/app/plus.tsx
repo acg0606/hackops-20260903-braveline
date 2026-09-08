@@ -1,8 +1,9 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { type Href, useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { createPreviewEntitlements } from '@/services';
+import { createEntitlements, type EntitlementSnapshot } from '@/services';
 import {
   BraveCanvas,
   InkText,
@@ -15,7 +16,10 @@ import {
 } from '@/ui/braveline';
 
 const prepareRoute = '/prepare' as Href;
-const previewEntitlements = createPreviewEntitlements();
+const entitlements = createEntitlements({
+  apiKey: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY,
+  isProduction: process.env.NODE_ENV === 'production',
+});
 
 const benefits = [
   {
@@ -41,18 +45,69 @@ const benefits = [
 export default function PlusScreen() {
   const router = useRouter();
   const colors = useBraveTheme();
+  const [snapshot, setSnapshot] = useState<EntitlementSnapshot>(entitlements.snapshot);
+  const [busyAction, setBusyAction] = useState<'paywall' | 'restore' | null>(null);
+
+  const syncSnapshot = useCallback((next: EntitlementSnapshot) => {
+    setSnapshot(next);
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    void entitlements.initialize().then((result) => {
+      if (mounted) syncSnapshot(result.snapshot);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [syncSnapshot]);
+
+  const openPaywall = useCallback(async () => {
+    setBusyAction('paywall');
+    try {
+      const result = await entitlements.presentPaywall();
+      syncSnapshot(result.snapshot);
+    } finally {
+      setBusyAction(null);
+    }
+  }, [syncSnapshot]);
+
+  const restorePurchases = useCallback(async () => {
+    setBusyAction('restore');
+    try {
+      const result = await entitlements.restore();
+      syncSnapshot(result.snapshot);
+    } finally {
+      setBusyAction(null);
+    }
+  }, [syncSnapshot]);
+
+  const purchaseMode = snapshot.mode === 'revenuecat-native';
+  const purchaseBusy = busyAction !== null || snapshot.status === 'initializing';
+  const statusLabel = purchaseMode
+    ? snapshot.isPro
+      ? 'PLUS VERIFIED — REVENUECAT'
+      : `REVENUECAT ${snapshot.status.toUpperCase()}`
+    : 'PURCHASES OFF — PREVIEW ONLY';
 
   return (
     <BraveCanvas>
-      <TopBar label="BRAVELINE PLUS" meta="LOCAL PREVIEW" onBack={() => router.back()} />
+      <TopBar
+        label="BRAVELINE PLUS"
+        meta={purchaseMode ? 'TEST STORE' : 'LOCAL PREVIEW'}
+        onBack={() => router.back()}
+      />
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <View accessibilityLabel="Preview only. No purchase is available on this screen." style={styles.previewBand}>
+        <View
+          accessibilityLabel={purchaseMode ? snapshot.disclosure : 'Preview only. No purchase is available on this screen.'}
+          style={styles.previewBand}
+        >
           <MaterialCommunityIcons color={colors.orange} name="eye-outline" size={22} />
           <InkText style={styles.previewText} weight="semibold">
-            PURCHASES OFF — PREVIEW ONLY
+            {statusLabel}
           </InkText>
         </View>
 
@@ -97,17 +152,26 @@ export default function PlusScreen() {
             <InkText style={styles.offerCopy}>to explore Plus before a paid plan begins.</InkText>
           </View>
           <InkText style={styles.offerFine}>
-            {previewEntitlements.snapshot.disclosure} Billing details will appear only when RevenueCat is configured.
+            {snapshot.disclosure} {purchaseMode ? 'This build uses RevenueCat Test Store only.' : 'Billing details will appear only when RevenueCat is configured.'}
           </InkText>
         </View>
 
         <OutlineAction
-          accessibilityHint="Unavailable because this is a local preview"
-          disabled
-          icon="lock-outline"
-          label="Start trial — available in purchase mode"
-          onPress={() => undefined}
-          testID="plus-preview-disabled"
+          accessibilityHint={purchaseMode ? 'Opens the RevenueCat Test Store paywall' : 'Unavailable because this is a local preview'}
+          disabled={!purchaseMode || purchaseBusy}
+          icon={purchaseMode ? 'rocket-launch-outline' : 'lock-outline'}
+          label={purchaseMode ? (busyAction === 'paywall' ? 'Opening Test Store…' : 'Open Test Store paywall') : 'Start trial — available in purchase mode'}
+          onPress={openPaywall}
+          testID={purchaseMode ? 'plus-open-paywall' : 'plus-preview-disabled'}
+        />
+        <View style={styles.actionSpacer} />
+        <OutlineAction
+          accessibilityHint="Restores and verifies an existing RevenueCat entitlement"
+          disabled={!purchaseMode || purchaseBusy}
+          icon="restore"
+          label={busyAction === 'restore' ? 'Restoring…' : 'Restore purchases'}
+          onPress={restorePurchases}
+          testID="plus-restore"
         />
         <View style={styles.actionSpacer} />
         <PrimaryAction
@@ -118,15 +182,17 @@ export default function PlusScreen() {
           testID="plus-continue-free"
         />
 
-        <View style={styles.restoreRow}>
-          <MaterialCommunityIcons color={colors.aubergineSoft} name="restore" size={21} />
-          <InkText style={styles.restoreText}>
-            Restore and manage access appear here in live purchase mode.
-          </InkText>
-        </View>
+        {snapshot.isPro ? (
+          <View accessibilityLiveRegion="polite" style={styles.restoreRow}>
+            <MaterialCommunityIcons color={colors.success} name="check-decagram-outline" size={21} />
+            <InkText style={[styles.restoreText, { color: colors.success }]} weight="semibold">
+              BraveLine Plus access is active and verified by RevenueCat.
+            </InkText>
+          </View>
+        ) : null}
 
         <InkText style={styles.entitlement}>
-          PLANNED ENTITLEMENT · {previewEntitlements.snapshot.entitlementId.toUpperCase()}
+          ENTITLEMENT · {snapshot.entitlementId.toUpperCase()}
         </InkText>
       </ScrollView>
     </BraveCanvas>

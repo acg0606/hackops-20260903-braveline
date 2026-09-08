@@ -14,9 +14,10 @@
 
 ## External gates still open
 
-- **HOLD — RevenueCat:** create or select the real project, offering, product, and public SDK key; verify purchase or restore. Never commit keys.
+- **FACT — RevenueCat configuration:** project `0b5db614`, offering `default`, Test Store products `lifetime`, `yearly`, and `monthly`, entitlement `braveline_pro`, and paywall `wfc1e1a89be5494283` are configured. The paywall is published and explicitly says `TEST STORE · NO REAL CHARGE`. See [`evidence/revenuecat-configuration-20260908.md`](evidence/revenuecat-configuration-20260908.md).
+- **HOLD — RevenueCat device receipt:** the public SDK key was not persisted in the repository, and no purchase or restore is claimed until the Test Store flow is exercised on a development build and the entitlement readback is retained.
 - **HOLD — store:** publish the first public Android version within the event window and retain its listing receipt.
 - **HOLD — media:** select the final 1179×2556 capture after the store build is fixed, then publish a public YouTube or Vimeo video of at most two minutes.
 - **HOLD — Devpost:** recheck the logged-in registration, populate the entry, and submit only after every required receipt exists.
 
-The APKs and screenshots are local emulator evidence, not store, purchase, registration, or submission receipts. The UI-hardening APK is an x86_64 test build signed with the repository's current release signing configuration; it is not a Play Store artifact.
+The APKs and screenshots are local emulator evidence, not store, purchase, registration, or submission receipts. The RevenueCat dashboard receipt proves configuration and paywall publication, not a device purchase. The UI-hardening APK is an x86_64 test build signed with the repository's current release signing configuration; it is not a Play Store artifact.

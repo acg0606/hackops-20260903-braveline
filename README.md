@@ -10,8 +10,9 @@ BraveLine is a private English rehearsal app for difficult workplace conversatio
 - Local playback, verified restart recovery, and deletion with explicit failure states; no audio upload path exists.
 - Confirmed delete-before-retry semantics prevent an earlier private take from becoming an invisible orphan.
 - Deterministic, provenance-labelled feedback that does not score accent, emotion, or pronunciation.
-- RevenueCat native integration boundary for the `braveline_pro` entitlement.
+- RevenueCat native paywall, simulated Test Store purchase, verified `braveline_pro` entitlement, and restore.
 - Honest Plus preview when RevenueCat is not configured, plus a release guard that rejects Test Store keys in production.
+- Automatic light/dark themes and a two-column landscape rehearsal, verified at system font scale 1.3.
 
 ## Run locally
 
@@ -56,13 +57,17 @@ The remediation receipt in [`docs/evidence/native-pass-20260904-r2/receipt.md`](
 
 - A passing local build or emulator run proves only local technical behavior.
 - A RevenueCat Test Store project, offering, products, entitlement, and published paywall are configured externally; no SDK key is stored in this repository.
-- The default local checkout remains preview-only until `EXPO_PUBLIC_REVENUECAT_API_KEY` is supplied at runtime, and no purchase or restore is claimed without a device receipt.
-- No public repository, store release, Devpost entry, or Shipaton submission is claimed by this codebase.
+- The default local checkout remains preview-only until `EXPO_PUBLIC_REVENUECAT_API_KEY` is supplied at runtime. The [device receipt](docs/evidence/revenuecat-test-store-20260908/receipt.md) proves a simulated purchase and restore, with no real charge or revenue.
+- No store release or completed Shipaton submission is claimed by this codebase. Consult [submission readiness](docs/submission-readiness.md) for current delivery status.
 - Release/submission status requires separate receipts from the relevant external services.
 
 ## Privacy model
 
 The audio service accepts only device-local URIs, writes recordings into app-private storage, verifies that the native file exists and is non-empty, and keeps metadata if deletion cannot be confirmed. A verified take resumes in Ready after restart; stale missing-file metadata is cleared. Retry requires explicit consent and removes the current file before opening the focused phrase. The guide is stopped before recording begins. BraveLine has no network code path for rehearsal audio.
+
+## AI and Codex use
+
+Codex assisted with implementation, test authoring, native debugging, documentation, and the assembly of the demo from retained emulator captures. The app's rehearsal and feedback logic is deterministic: it does not send recordings to a model, transcribe them, or score accent, emotion, or pronunciation. Quiet Coach uses device text-to-speech. The current workplace scenario is synthetic.
 
 ## License
 

@@ -1,8 +1,6 @@
-# BraveLine — RevenueCat Shipaton 2026 submission package
+# BraveLine — Shipaton Next Gen submission package
 
-## Category
-
-Next Gen Award — use only after the entrant confirms active-student status and a qualifying academic email in Devpost.
+Prepared submission copy, not a submission receipt. The entry is intended for Next Gen only. Store links and first-store-release declarations are intentionally absent.
 
 ## Project name
 
@@ -10,73 +8,56 @@ BraveLine
 
 ## Tagline
 
-Private rehearsal for difficult workplace conversations
-
-## About the project
+Rehearse a difficult workplace conversation in English with a quiet guide, then speak on your own. Private, repeatable, and built for practice—not accent scores.
 
 ## Inspiration
 
-Difficult workplace conversations often go badly before they even begin. New managers may know the boundary they need to set, yet still need a private place to hear the words, practise them aloud, and try one difficult moment again.
+Knowing what to say is different from being ready to say it out loud. For new managers working in English, a difficult deadline conversation can be especially hard to rehearse. BraveLine creates a private space to practice one boundary, lower the guide, and try the exact phrase again.
 
 ## What it does
 
-BraveLine is a privacy-first Android rehearsal app for difficult workplace conversations. The current scenario helps a user set a boundary around an impossible deadline. A low-volume Quiet Coach models one natural phrase, fades completely before Solo, and then BraveLine records only the user's voice. The Ready screen supports local playback, explicit deletion, recovery after restart, and an exact-moment retry.
+Prepare presents a short, synthetic workplace scenario. Quiet Coach reads the script at a low guide level. The user can turn the guide off, move into Solo, and record a take without the guide playing over their voice. Ready lets the user listen, explicitly delete the recording, or consent to deleting it before retrying one focused phrase.
 
-The complete boundary rehearsal remains free. BraveLine Plus demonstrates a future customization layer through RevenueCat. On the verified development build, RevenueCat's Test Store loads the published paywall, completes a simulated purchase, activates the `braveline_pro` entitlement, and restores it. The paywall and app both state that this is Test Store only and creates no real charge.
+Recordings stay in app-private storage. A verified take can resume after the app restarts. The app does not upload rehearsal audio, transcribe it, or score pronunciation, accent, or emotion. Any feedback is explicitly deterministic practice guidance, not an AI assessment of the recording.
+
+BraveLine Plus integrates RevenueCat offerings, entitlement checks, a published paywall, purchase, and restore. The demonstrated configuration is RevenueCat Test Store: the annual purchase and restored `braveline_pro` entitlement are simulated, with no real charge or revenue. An unconfigured checkout remains preview-only instead of pretending a payment succeeded.
 
 ## How we built it
 
-BraveLine uses React Native, Expo Router, TypeScript, Expo Audio, and RevenueCat's native React Native SDK and Paywalls UI. Rehearsal audio and metadata stay in app-private storage; there is no audio upload path. The entitlement boundary fails closed when no SDK key is configured, so an ordinary local build cannot pretend that purchases are available.
+Expo 57, React Native 0.86, TypeScript, Expo Router, Expo Audio, Expo Speech, Expo File System, and RevenueCat React Native Purchases. Audio lifecycle and entitlement decisions live behind testable service boundaries. Android API 36 emulator captures show the implemented product rather than a conceptual mockup.
 
-We verified the app on an Android API 36 emulator with strict TypeScript, ESLint, Expo dependency checks, 42 automated tests, native recording and playback, delete-before-retry behavior, restart recovery, light and dark themes, portrait and landscape layouts, and system font scale 1.3.
+Codex assisted with implementation, tests, native debugging, documentation, and assembly of the demo from retained emulator captures. The rehearsal logic is deterministic and Quiet Coach uses device text-to-speech. The scenario and original application assets are included in the MIT-licensed source.
 
-## Challenges
+## Challenges we ran into
 
-The most important challenge was preserving truthful state across audio lifecycle edges: guide playback must stop before recording, deleted takes must not reappear, and a retry must remove the old audio before opening the selected phrase. Windows path length and native C++ build memory also required a short-path, single-job Android build without weakening the source checks.
+Recording state must reflect a real, non-empty private file, not simply a successful button press. We added verified Ready recovery after restart and preserved metadata when deletion cannot be confirmed. Retry removes the previous take before opening the focused phrase. We also hardened Android safe areas, guide-to-recording handoff, dark mode, and landscape at an enlarged system font scale.
 
-## Accomplishments that we are proud of
+## Accomplishments
 
-- A complete rehearsal remains usable without a paywall.
-- Quiet Coach hands off to a guide-free Solo recording.
-- Rehearsal audio stays private to the app sandbox and can be explicitly deleted.
-- Ready state survives an app restart and an exact-moment retry cannot orphan the previous take.
-- The RevenueCat Test Store purchase and restore are verified on device with clear no-charge disclosure.
-- The repository includes reproducible tests and evidence receipts instead of unsupported store or traction claims.
+- 42 automated tests plus TypeScript, zero-warning ESLint, and Expo dependency checks passed in the verified baseline.
+- Native Android evidence covers guide-off recording, local playback, deletion, restart recovery, and exact-phrase retry.
+- Light and dark themes, portrait, and two-column landscape at font scale 1.3 were captured.
+- RevenueCat Test Store purchase and restore were verified on Android with an active entitlement and no real charge.
 
 ## What we learned
 
-Trust in a private coaching product comes from boundaries that are visible in both code and copy. RevenueCat works best here when the entitlement is a transparent capability boundary, not an interruption to the core rehearsal. Native evidence also matters: a passing test suite alone does not prove microphone lifecycle, storage cleanup, layout safety, or purchase UI behavior.
+A trustworthy rehearsal tool needs fewer claims and clearer transitions. Showing exactly when the guide stops, where a take lives, and what retry deletes matters more than an unvalidated speaking score.
 
 ## What's next
 
-Next we would add user-authored scenarios and counterpart styles behind BraveLine Plus, validate the experience with new managers, add accessible captions to the public demo, and replace the Test Store configuration with production store products only after a real store release is ready.
+Add more workplace scenarios, test with consenting English learners, and validate usefulness before adding any optional assessment. A real store launch and paid products would require separate release work; neither is claimed in this Next Gen entry.
 
-## Built with
+## Build and verify
 
-`react-native`, `expo.io`, `typescript`, `revenuecat`
+See [README](../README.md) for setup and [native evidence](evidence-manifest.json). The repository contains the code and original assets. No private RevenueCat SDK key is distributed. Without configuration, the practice workflow remains usable and Plus is preview-only; judges can inspect the Test Store evidence without making a payment.
 
-## Try it out / source
+## Prepared private form choices
 
-https://github.com/acg0606/hackops-20260903-braveline
-
-## Public video metadata
-
-Title: `BraveLine — RevenueCat Shipaton 2026 Next Gen Demo`
-
-Description:
-
-> BraveLine is a privacy-first Android rehearsal app for difficult workplace conversations. This 56-second device walkthrough covers Prepare, Quiet Coach, a guide-free Solo take, local Ready and retry, and the RevenueCat Test Store paywall with verified `braveline_pro` purchase and restore. Test Store only; no real charge or revenue. Built for the RevenueCat Shipaton 2026 Next Gen Award. Source: https://github.com/acg0606/hackops-20260903-braveline
-
-Asset: `docs/evidence/submission-assets/braveline-shipaton-demo-20260908.mp4`
-
-Duration: `00:00:56.00`
-
-Resolution: `1080x2340`
-
-SHA-256: `CB525D37787665D2BA41A17A5F5D6C99619232C6670F1EB7866ACA12B65556A9`
-
-## X draft
-
-> BraveLine helps new managers rehearse difficult workplace conversations privately on device. Built for RevenueCat Shipaton 2026 Next Gen with Expo + RevenueCat Test Store and verified purchase/restore — no real charge. Demo: VIDEO_URL Code: https://github.com/acg0606/hackops-20260903-braveline
-
-Before publication, replace `VIDEO_URL`, verify the official company mention and event hashtag from primary sources, and run the duplicate check required by `docs/hackops-social-publication-v1.md`.
+- Platform: Android.
+- Next Gen: public source route; active enrollment confirmed by entrant.
+- Academic email: enter only in the Devpost academic field, never in public copy.
+- RevenueCat project ID: `0b5db614`.
+- Icon: `assets/images/icon.png` (1024×1024).
+- Screenshot: `docs/evidence/submission-assets/braveline-android-1179x2556.png`.
+- Demo: 56-second English Android walkthrough; a public YouTube or Vimeo URL is required before final submission.
+- No store date, store URL, growth-fund opt-in, real revenue, or final submission is asserted.

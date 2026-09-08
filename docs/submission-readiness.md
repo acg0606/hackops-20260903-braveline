@@ -15,9 +15,11 @@
 ## External gates still open
 
 - **FACT — RevenueCat configuration:** project `0b5db614`, offering `default`, Test Store products `lifetime`, `yearly`, and `monthly`, entitlement `braveline_pro`, and paywall `wfc1e1a89be5494283` are configured. The paywall is published and explicitly says `TEST STORE · NO REAL CHARGE`. See [`evidence/revenuecat-configuration-20260908.md`](evidence/revenuecat-configuration-20260908.md).
-- **HOLD — RevenueCat device receipt:** the public SDK key was not persisted in the repository, and no purchase or restore is claimed until the Test Store flow is exercised on a development build and the entitlement readback is retained.
-- **HOLD — store:** publish the first public Android version within the event window and retain its listing receipt.
-- **HOLD — media:** select the final 1179×2556 capture after the store build is fixed, then publish a public YouTube or Vimeo video of at most two minutes.
+- **FACT — RevenueCat device receipt:** an Android API 36 development build loaded the published paywall, completed a simulated annual Test Store purchase, read back the active `braveline_pro` entitlement, and completed restore. No real store or charge was used. See [`evidence/revenuecat-test-store-20260908/receipt.md`](evidence/revenuecat-test-store-20260908/receipt.md).
+- **FACT — Next Gen route:** the [official rules](https://revenuecat-shipaton-2026.devpost.com/rules) allow an eligible active student to submit a public open-source repository and public English demo video instead of a store listing. This route avoids creating a paid Google Play developer account.
+- **HOLD — Next Gen eligibility:** confirm the entrant's active-student status and qualifying academic email in the logged-in Devpost submission before selecting this category.
+- **HOLD — public repository:** change the existing MIT-licensed GitHub repository from private to public only at the final authorized permission-change step, then verify anonymous access.
+- **HOLD — media:** publish the verified 56-second English device walkthrough to a public YouTube or Vimeo URL and retain an anonymous readback.
 - **HOLD — Devpost:** recheck the logged-in registration, populate the entry, and submit only after every required receipt exists.
 
-The APKs and screenshots are local emulator evidence, not store, purchase, registration, or submission receipts. The RevenueCat dashboard receipt proves configuration and paywall publication, not a device purchase. The UI-hardening APK is an x86_64 test build signed with the repository's current release signing configuration; it is not a Play Store artifact.
+The APKs and screenshots are local emulator evidence, not a Play Store transaction, public store, eligibility, public-video, or submission receipt. The RevenueCat Test Store receipt proves only a simulated purchase and restore. The UI-hardening APK is an x86_64 test build signed with the repository's current release signing configuration; it is not a Play Store artifact.

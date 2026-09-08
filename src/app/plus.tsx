@@ -47,6 +47,7 @@ export default function PlusScreen() {
   const colors = useBraveTheme();
   const [snapshot, setSnapshot] = useState<EntitlementSnapshot>(entitlements.snapshot);
   const [busyAction, setBusyAction] = useState<'paywall' | 'restore' | null>(null);
+  const [verificationReceipt, setVerificationReceipt] = useState<'purchase' | 'restore' | null>(null);
 
   const syncSnapshot = useCallback((next: EntitlementSnapshot) => {
     setSnapshot(next);
@@ -67,6 +68,7 @@ export default function PlusScreen() {
     try {
       const result = await entitlements.presentPaywall();
       syncSnapshot(result.snapshot);
+      setVerificationReceipt(result.snapshot.isPro ? 'purchase' : null);
     } finally {
       setBusyAction(null);
     }
@@ -77,6 +79,7 @@ export default function PlusScreen() {
     try {
       const result = await entitlements.restore();
       syncSnapshot(result.snapshot);
+      setVerificationReceipt(result.snapshot.isPro ? 'restore' : null);
     } finally {
       setBusyAction(null);
     }
@@ -186,13 +189,18 @@ export default function PlusScreen() {
           <View accessibilityLiveRegion="polite" style={styles.restoreRow}>
             <MaterialCommunityIcons color={colors.success} name="check-decagram-outline" size={21} />
             <InkText style={[styles.restoreText, { color: colors.success }]} weight="semibold">
-              BraveLine Plus access is active and verified by RevenueCat.
+              {verificationReceipt === 'restore'
+                ? 'Restore completed. BraveLine Plus is active and verified by RevenueCat.'
+                : 'BraveLine Plus access is active and verified by RevenueCat.'}
             </InkText>
           </View>
         ) : null}
 
         <InkText style={styles.entitlement}>
           ENTITLEMENT · {snapshot.entitlementId.toUpperCase()}
+        </InkText>
+        <InkText accessibilityLiveRegion="polite" style={styles.entitlement}>
+          LAST REVENUECAT ACTION · {verificationReceipt?.toUpperCase() ?? 'INITIALIZATION'}
         </InkText>
       </ScrollView>
     </BraveCanvas>

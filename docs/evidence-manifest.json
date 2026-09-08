@@ -127,8 +127,25 @@
       "boundary": "LOCAL_ANDROID_EMULATOR_EVIDENCE_NOT_STORE_RECEIPT"
     },
     {
+      "status": "FACT",
+      "claim": "An x86_64 Android API 36 development build loaded the published RevenueCat paywall, completed a simulated Test Store annual purchase, read back the active braveline_pro entitlement, and completed restore. The Test Store generated no real charge or revenue.",
+      "evidence": "docs/evidence/revenuecat-test-store-20260908/receipt.md",
+      "apkBytes": 87231377,
+      "apkSha256": "BAE3046568A637231D9633F7BB0D887022322D5E6F06A20F7FAF9A8D20B943E4",
+      "boundary": "REVENUECAT_TEST_STORE_SIMULATION_NOT_REAL_TRANSACTION"
+    },
+    {
+      "status": "FACT",
+      "claim": "A 56-second English Android device walkthrough was assembled from the retained native evidence frames. It covers Prepare, Quiet Coach, recording, Ready, the RevenueCat Test Store paywall, and the explicit restore receipt. It is a local submission asset until a public YouTube or Vimeo URL is verified.",
+      "evidence": "docs/evidence/submission-assets/braveline-shipaton-demo-20260908.mp4",
+      "durationSeconds": 56,
+      "resolution": "1080x2340",
+      "sha256": "CB525D37787665D2BA41A17A5F5D6C99619232C6670F1EB7866ACA12B65556A9",
+      "boundary": "LOCAL_VIDEO_ASSET_NOT_PUBLIC_VIDEO_RECEIPT"
+    },
+    {
       "status": "HOLD",
-      "claim": "RevenueCat purchase proof, store publication, public demo video, final store-build screenshot selection, and Devpost submission are external gates and are not claimed by this manifest. Devpost registration was rechecked live on 2026-09-07 and was already registered."
+      "claim": "Next Gen eligibility, public repository access, public demo video, and final Devpost submission remain external gates. Devpost registration was rechecked live on 2026-09-07 and was already registered."
     }
   ]
 }

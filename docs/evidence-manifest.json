@@ -149,18 +149,38 @@
       "boundary": "LOCAL_AUTOMATED_VERIFICATION_NOT_NATIVE_RECEIPT"
     },
     {
-      "status": "HOLD",
-      "claim": "Successful restore re-verification is pending. The previous UI could display restore success after an operation failure while retaining an already-active entitlement. A fresh device run with corrected receipt handling is required.",
-      "evidence": "docs/evidence/revenuecat-test-store-20260908/receipt.md"
+      "status": "FACT",
+      "claim": "Fresh native verification on 2026-09-08 superseded the earlier restore-verification hold. Corrected receipt handling displayed RESTORE VERIFIED after a successful native SDK restore with the active entitlement. Opening the paywall with existing access separately displayed PAYWALL NOT PRESENTED and correctly claimed no new purchase or restore. The historical UI receipt limitation remains documented.",
+      "evidence": "docs/evidence/native-demo-20260908-r2/receipt.md",
+      "boundary": "NATIVE_TEST_STORE_RESTORE_NOT_REAL_CHARGE_OR_NEW_PURCHASE"
     },
     {
       "status": "FACT",
-      "claim": "The existing 56-second English video is a captioned screenshot montage assembled from retained Android emulator evidence, not a continuous screen recording. It contains historical Prepare, Quiet Coach, recording, Ready, and RevenueCat paywall captures, plus the previous UI restore-success message that requires re-verification. It has no verified public URL; submission suitability and public hosting remain pending.",
+      "claim": "The earlier 56-second English video is retained as a historical captioned screenshot montage, not a continuous screen recording. It includes the previous UI restore-success message, which does not independently prove successful restore. Fresh native proof and new actual screen recordings are retained separately. This historical montage has no verified public URL.",
       "evidence": "docs/evidence/submission-assets/braveline-shipaton-demo-20260908.mp4",
       "durationSeconds": 56,
       "resolution": "1080x2340",
       "sha256": "CB525D37787665D2BA41A17A5F5D6C99619232C6670F1EB7866ACA12B65556A9",
       "boundary": "HISTORICAL_SCREENSHOT_MONTAGE_NOT_LIVE_CAPTURE_OR_PUBLIC_VIDEO_RECEIPT"
+    },
+    {
+      "status": "FACT",
+      "claim": "Five new clips were produced directly with Android screenrecord in separate passes on an API 36 emulator. They include real guide-off recording transitions, Ready and retry, and corrected restore feedback. The recording exercise deliberately used silent input with microphone privacy enabled. The raw clips have no audio stream; the native manifest retains their measured durations and hashes.",
+      "evidence": "docs/evidence/native-demo-20260908-r2/manifest.json",
+      "boundary": "ACTUAL_NATIVE_SCREEN_RECORDINGS_SEPARATE_PASSES_TEST_STORE_ONLY"
+    },
+    {
+      "status": "FACT",
+      "claim": "The finished English-captioned local demo is an edit of actual Android screen-recording clips captured in separate passes. The edit was visually reviewed and discloses the silent emulator take with microphone privacy enabled. Its measured duration is 65.5 seconds. It has no audio stream and no verified public YouTube or Vimeo URL.",
+      "evidence": "docs/evidence/submission-assets/braveline-live-demo-20260908.mp4",
+      "durationSeconds": 65.5,
+      "resolution": "1080x2340",
+      "framesPerSecond": 24,
+      "codec": "h264",
+      "hasAudioStream": false,
+      "bytes": 3474141,
+      "sha256": "6B0371CB484D78AC1F06CFD2356C7105B88FF93BDEF8B39CF33D3D8BDAF4FD0F",
+      "boundary": "VERIFIED_LOCAL_NATIVE_VIDEO_EDIT_NOT_PUBLIC_VIDEO_RECEIPT"
     },
     {
       "status": "FACT",

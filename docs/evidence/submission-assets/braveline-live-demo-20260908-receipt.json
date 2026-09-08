@@ -1,0 +1,19 @@
+{
+  "status": "LOCAL_VIDEO_VERIFIED_PUBLIC_HOSTING_PENDING",
+  "file": "braveline-live-demo-20260908.mp4",
+  "createdOn": "2026-09-08",
+  "bytes": 3474141,
+  "sha256": "6B0371CB484D78AC1F06CFD2356C7105B88FF93BDEF8B39CF33D3D8BDAF4FD0F",
+  "durationSeconds": 65.5,
+  "width": 1080,
+  "height": 2340,
+  "fps": 24,
+  "codec": "h264",
+  "hasAudioStream": false,
+  "sourceManifest": "../native-demo-20260908-r2/manifest.json",
+  "editPlan": "../native-demo-20260908-r2/edit-plan.json",
+  "verification": "Decoded representative frames across the finished video and inspected the closing RevenueCat restore state. Captions are English and outside the app footage; no device frame or generated app screens.",
+  "disclosure": "Separate real Android screen recordings edited for brevity. Silent test-emulator input with microphone privacy enabled; no speech quality or real charge is claimed. Measured final duration, not the planned 61 seconds, is authoritative.",
+  "publicVideoUrl": null,
+  "devpostSubmissionReceipt": null
+}

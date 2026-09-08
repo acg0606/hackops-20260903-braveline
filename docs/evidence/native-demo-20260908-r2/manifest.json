@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-08",
+  "device": "emulator-5554",
+  "avd": "StudyPebble_API_36",
+  "capture": "Android screenrecord",
+  "width": 720,
+  "height": 1560,
+  "codec": "h264",
+  "hasAudioStream": false,
+  "microphonePrivacyEnabled": true,
+  "clips": [
+    {
+      "file": "braveline-prepare-hero-r2.mp4",
+      "durationSeconds": 5.48,
+      "bytes": 545104,
+      "sha256": "1F7511AD79416584D9230C1E0D83D7C9F92E599A2A4AD0ED300AF6458DAF37DC"
+    },
+    {
+      "file": "braveline-prepare-coach-r2.mp4",
+      "durationSeconds": 44.96,
+      "bytes": 2073076,
+      "sha256": "5EE3127B2FAD00327359072D327293C61865E7419B14A76AF29A290CE6AA9459"
+    },
+    {
+      "file": "braveline-review-retry-r2.mp4",
+      "durationSeconds": 41.62,
+      "bytes": 1792726,
+      "sha256": "D1C2B6FCB911D949451F99BC583B9DF54638FCBD5E81B1881E96B8A56D7F2EF2"
+    },
+    {
+      "file": "braveline-retry-transition-r2.mp4",
+      "durationSeconds": 8.43,
+      "bytes": 533896,
+      "sha256": "BA4FB52D888DA3FC153F8CC0860F3BECAEC1A99A35853B097D8E511E4217FEC9"
+    },
+    {
+      "file": "braveline-restore-r2.mp4",
+      "durationSeconds": 23.83,
+      "bytes": 131356,
+      "sha256": "E60C2561ABFB07C6E90C5471BAAF09D270F482A052F56CF235E43FD05979DCAD"
+    }
+  ],
+  "verifiedOutcomes": [
+    "quiet-coach-15-percent",
+    "solo-recording-guide-zero-silent-input",
+    "ready-honest-no-transcript-feedback",
+    "delete-and-retry-friday-phrase",
+    "restore-action-success-with-active-entitlement",
+    "paywall-not-presented-with-existing-active-entitlement"
+  ],
+  "externalSubmissionClaimed": false,
+  "newPurchaseClaimed": false
+}

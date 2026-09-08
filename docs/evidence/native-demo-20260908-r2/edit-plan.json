@@ -1,0 +1,12 @@
+{
+  "source": "Actual Android API 36 screen recordings captured on 2026-09-08",
+  "disclosure": "Separate continuous recordings edited for brevity. Microphone privacy was enabled in the test emulator. Silent capture demonstrates UI behavior, not captured speech quality.",
+  "clips": [
+    { "file": "braveline-prepare-hero-r2.mp4", "start": 0, "seconds": 5, "headline": "BraveLine - rehearse before it matters", "detail": "A private space for difficult workplace conversations" },
+    { "file": "braveline-prepare-coach-r2.mp4", "start": 10, "seconds": 14, "headline": "Hear the line with Quiet Coach", "detail": "The guide is adjustable and clearly separated from recording" },
+    { "file": "braveline-prepare-coach-r2.mp4", "start": 38, "seconds": 6, "headline": "Record with the guide at zero", "detail": "Silent test-emulator take - recordings stay on the device" },
+    { "file": "braveline-review-retry-r2.mp4", "start": 12, "seconds": 16, "headline": "Stop and review a verified take", "detail": "Practice guidance is deterministic - no AI voice scoring" },
+    { "file": "braveline-retry-transition-r2.mp4", "start": 0, "seconds": 8, "headline": "Delete with consent and retry one phrase", "detail": "The previous take is replaced only after confirmation" },
+    { "file": "braveline-restore-r2.mp4", "start": 0, "seconds": 12, "headline": "RevenueCat restore verified on Android", "detail": "Test Store only - no real charge - extra Plus features planned" }
+  ]
+}

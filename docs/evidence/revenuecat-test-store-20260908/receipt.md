@@ -18,10 +18,12 @@
 - `03-purchase-verified.png` — active entitlement immediately after the simulated valid purchase.
 - `04-restore-verified.png` — retained screenshot of the previous UI restore-success message and active entitlement. The historical filename is preserved; it does not independently prove successful restore.
 
-## Correction — restore re-verification pending
+## Historical correction — superseded by fresh native restore verification
 
-The UI set its restore-success message from `snapshot.isPro` without checking the operation's `ok` result. A failed restore could preserve an already-active entitlement and display the same message. A fresh device run with corrected receipt handling is required before successful restore is claimed. This correction does not invalidate the separately observed `TEST VALID PURCHASE` confirmation and subsequent active entitlement.
+The earlier UI set its restore-success message from `snapshot.isPro` without checking the operation's `ok` result. A failed restore could preserve an already-active entitlement and display the same message. That finding required a fresh device run with corrected receipt handling before successful restore could be claimed. It does not invalidate the separately observed `TEST VALID PURCHASE` confirmation and subsequent active entitlement.
+
+That follow-up requirement was met on 2026-09-08. The [corrected native receipt](../native-demo-20260908-r2/receipt.md) records a successful Test Store restore with `RESTORE VERIFIED` in `12-restore-result.xml/png`. Its `13-paywall-outcome.xml/png` separately verifies that existing access correctly reports `PAYWALL NOT PRESENTED` and no new purchase or restore. These fresh checkpoints supersede the earlier restore-verification hold; they do not retroactively make `04-restore-verified.png` proof of successful restore.
 
 ## Boundary
 
-This records an observed simulated annual RevenueCat Test Store purchase and active entitlement on an Android API 36 emulator. Successful restore re-verification is pending. It does not prove a Google Play transaction, real revenue, public store release, public video, Next Gen eligibility, or Devpost submission.
+This historical receipt records an observed simulated annual RevenueCat Test Store purchase and active entitlement on an Android API 36 emulator. Successful restore is separately verified by the corrected native receipt linked above. Neither receipt proves a Google Play transaction, real revenue, public store release, public video, Next Gen eligibility, or Devpost submission.

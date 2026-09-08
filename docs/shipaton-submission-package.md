@@ -20,13 +20,13 @@ Prepare presents a short, synthetic workplace scenario. Quiet Coach reads the sc
 
 Recordings stay in app-private storage. A verified take can resume after the app restarts. The app does not upload rehearsal audio, transcribe it, or score pronunciation, accent, or emotion. Any feedback is explicitly deterministic practice guidance, not an AI assessment of the recording.
 
-BraveLine Plus integrates RevenueCat offerings, entitlement checks, a published paywall, purchase, and a restore action. An annual RevenueCat Test Store purchase and active `braveline_pro` entitlement were observed on Android, with no real charge or revenue. Successful restore is awaiting fresh device verification after a UI receipt-handling issue was identified. An unconfigured checkout remains preview-only. Custom scenarios, counterpart styles, and rehearsal history are planned Plus features; the current Test Store demonstration does not provide those features or a trial.
+BraveLine Plus integrates RevenueCat offerings, entitlement checks, a published paywall, purchase, and restore. An annual RevenueCat Test Store purchase and active `braveline_pro` entitlement were observed on Android, with no real charge or revenue. A fresh native run subsequently verified successful restore with corrected receipt handling. It also verified that opening the paywall with an already-active entitlement reports no new purchase or restore. An unconfigured checkout remains preview-only. Custom scenarios, counterpart styles, and rehearsal history are planned Plus features; the current Test Store demonstration does not provide those features or a trial.
 
 ## How we built it
 
 Expo 57, React Native 0.86, TypeScript, Expo Router, Expo Audio, Expo Speech, Expo File System, and RevenueCat React Native Purchases. Audio lifecycle and entitlement decisions live behind testable service boundaries. Android API 36 emulator captures show the implemented product rather than a conceptual mockup.
 
-Codex assisted with implementation, tests, native debugging, documentation, and assembly of a 56-second captioned screenshot montage from retained Android emulator evidence. The rehearsal logic is deterministic and Quiet Coach uses device text-to-speech. The scenario and original application assets are included in the MIT-licensed source.
+Codex assisted with implementation, tests, native debugging, documentation, and demo preparation. The finished 65.5-second English-captioned local demo uses actual Android screen recordings captured in separate passes and edited for brevity; the earlier 56-second screenshot montage remains historical evidence. The new recording exercise deliberately used silent input with microphone privacy enabled, and the final video has no audio stream. The rehearsal logic is deterministic and Quiet Coach uses device text-to-speech. The scenario and original application assets are included in the MIT-licensed source.
 
 ## Challenges we ran into
 
@@ -34,10 +34,10 @@ Recording state must reflect a real, non-empty private file, not simply a succes
 
 ## Accomplishments
 
-- 42 automated tests plus TypeScript, zero-warning ESLint, and Expo dependency checks passed in the verified baseline.
+- The historical 42-test baseline includes Expo dependency checks; the latest receipt-handling correction passed 52 automated tests, TypeScript, and zero-warning ESLint.
 - Native Android evidence covers guide-off recording, local playback, deletion, restart recovery, and exact-phrase retry.
 - Light and dark themes, portrait, and two-column landscape at font scale 1.3 were captured.
-- A simulated annual RevenueCat Test Store purchase and active entitlement were observed on Android with no real charge. Restore re-verification remains pending.
+- A simulated annual RevenueCat Test Store purchase and active entitlement were observed on Android with no real charge. Fresh native verification separately confirmed successful restore and accurate handling of an already-active entitlement.
 
 ## What we learned
 
@@ -59,5 +59,5 @@ See [README](../README.md) for setup and [native evidence](evidence-manifest.jso
 - RevenueCat project ID: `0b5db614`.
 - Icon: `assets/images/icon.png` (1024×1024).
 - Screenshot: `docs/evidence/submission-assets/braveline-android-1179x2556.png`.
-- Local media: 56-second English captioned screenshot montage from retained Android emulator evidence. A submission-suitable demo and verified public YouTube or Vimeo URL are required before final submission.
+- Local media: the finished, visually reviewed `docs/evidence/submission-assets/braveline-live-demo-20260908.mp4` is 65.5 seconds, 1080×2340, 24 fps, H.264, and has no audio stream. It is an English-captioned edit of actual native recordings from separate passes, with silent-input disclosure. SHA-256: `6B0371CB484D78AC1F06CFD2356C7105B88FF93BDEF8B39CF33D3D8BDAF4FD0F`. The earlier 56-second screenshot montage is historical. A verified public YouTube or Vimeo URL is still required before final submission.
 - No store date, store URL, growth-fund opt-in, real revenue, or final submission is asserted.

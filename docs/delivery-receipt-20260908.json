@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "project": "BraveLine",
+  "verifiedAt": "2026-09-08T17:27:51Z",
+  "scope": "Next Gen delivery, Devpost submission, public video and post-delivery X publicity",
+  "repository": {"url":"https://github.com/acg0606/hackops-20260903-braveline","visibility":"PUBLIC","license":"MIT","verifiedSourceCommit":"0981569"},
+  "verification": {"automatedTests":52,"typecheck":"PASS","eslint":"PASS_ZERO_WARNINGS","nativeReceipt":"evidence/native-demo-20260908-r2/receipt.md","newCodeChangedDuringPublication":false},
+  "submission": {
+    "status": "SUBMITTED",
+    "hackathon": "RevenueCat Shipaton 2026",
+    "route": "Next Gen",
+    "projectId": 1419777,
+    "submissionId": 1173574,
+    "submittedAt": "2026-09-08T13:22:40.736-04:00",
+    "url": "https://devpost.com/software/braveline",
+    "verification": ["DEVPOST_MCP_SUBMIT_PROJECT", "DEVPOST_MCP_GET_PROJECT", "AUTHENTICATED_UI_READBACK"],
+    "portalReadback": ["SUBMITTED", "5/5 steps done", "Project submitted!"],
+    "attachments": {"screenshotPhotoId":5282994,"screenshotDimensions":"1179x2556; no frame","iconPhotoId":5282995,"iconDimensions":"1024x1024; uncropped","persisted":true},
+    "academicField": "Saved in the private official form; address omitted from all public artifacts.",
+    "eligibilityBoundary": "Active enrollment declared by entrant; organizers retain final eligibility review."
+  },
+  "video": {
+    "status": "PUBLIC",
+    "url": "https://www.youtube.com/watch?v=B37Pk8UeUXw",
+    "id": "B37Pk8UeUXw",
+    "file": "evidence/submission-assets/braveline-live-demo-20260908.mp4",
+    "sha256": "6B0371CB484D78AC1F06CFD2356C7105B88FF93BDEF8B39CF33D3D8BDAF4FD0F",
+    "durationSeconds": 65.5,
+    "anonymousCheckedAt": "2026-09-08T17:20:23Z",
+    "anonymousVerification": {"httpStatus":200,"expectedIdAndTitle":true,"playabilityStatus":"OK","isPrivate":false,"credentials":"NONE; no cookies, WebSession or Authorization"},
+    "studioReadback": "Video published; Public visibility selected; exact ID returned. YouTube's automatic copyright check was still running at the final Studio observation; completion is not claimed.",
+    "browserPlayback": {"durationSeconds":65.521,"currentTime":65.521,"ended":true,"readyState":4,"error":null,"authenticatedSession":true},
+    "provenance": "Actual Android screen recordings edited from separate passes; English captions; silent emulator input with microphone privacy enabled; no audio stream."
+  },
+  "social": {
+    "version": 1,
+    "verification": "AUTHENTICATED_UI_READBACK",
+    "verifiedAt": "2026-09-08T17:27:51Z",
+    "publishedAt": "2026-09-08T17:27:04.000Z",
+    "accountHandle": "derivativador",
+    "postUrl": "https://x.com/derivativador/status/2097376183566430679",
+    "videoUrl": "https://www.youtube.com/watch?v=B37Pk8UeUXw",
+    "videoAnonymousAccessVerified": true,
+    "testUrl": null,
+    "mentions": ["@RevenueCat", "#Shipaton", "#BuildInPublic"],
+    "text": "BraveLine: private Android rehearsal for difficult workplace conversations. Built with @RevenueCat Test Store—simulated purchase, no real charge. #Shipaton #BuildInPublic\nDemo: https://www.youtube.com/watch?v=B37Pk8UeUXw\nCode: https://github.com/acg0606/hackops-20260903-braveline",
+    "duplicatePrevention": "Authenticated profile and Top/Latest search checked before one publish click. Exact post opened and read back after publication."
+  },
+  "boundaries": ["No real charge or revenue.", "No store release, hosted public app, or paid trial claimed.", "Planned Plus scenarios, profiles and history remain unimplemented.", "Submission acceptance is not a prize or final eligibility decision.", "Local HACKOPS registration records these external results; it does not itself send to Devpost."]
+}

@@ -1,6 +1,6 @@
 # BraveLine public video upload
 
-Status: the local video is complete and verified. YouTube/Vimeo access timed out in the available connection; no upload or public playback is claimed.
+Status: **PUBLIC AND VERIFIED**, September 8, 2026. [Watch the demo](https://www.youtube.com/watch?v=B37Pk8UeUXw). Earlier connection failures were resolved. YouTube Studio confirmed publication; unauthenticated readback returned `playabilityStatus=OK` and `isPrivate=false`. See [delivery receipt](delivery-receipt-20260908.md).
 
 File: `docs/evidence/submission-assets/braveline-live-demo-20260908.mp4` (65.5 seconds, 1080×2340, silent).
 
@@ -24,11 +24,11 @@ Built with Expo, React Native, TypeScript, and RevenueCat. Codex assisted with d
 
 #Shipaton #BuildInPublic
 
-## Final delivery gates
+## Completed delivery checks
 
-1. Upload to the entrant-authorized YouTube or Vimeo account, set public visibility, and verify playback without authentication.
-2. Attach that exact public URL to Devpost. Verify the required screenshot and private academic form field in the official portal.
-3. Submit to RevenueCat Shipaton 2026 and retain the official Submitted response and authenticated readback.
-4. Publish the prepared X draft with the actual demo URL, after duplicate prevention and verified submission. Do not claim a store release or a real payment.
+1. YouTube publication and unauthenticated availability verified for `B37Pk8UeUXw`.
+2. Exact video URL, required gallery assets and private academic field saved in Devpost.
+3. Submission `1173574` returned `Submitted`; MCP and authenticated portal readbacks agree.
+4. [X post](https://x.com/derivativador/status/2097376183566430679) published after duplicate checks and read back under the correct account. No store release or real payment is claimed.
 
 The project being published on a portfolio page is not a hackathon submission. A local MP4 or GitHub asset is not the required YouTube/Vimeo URL.

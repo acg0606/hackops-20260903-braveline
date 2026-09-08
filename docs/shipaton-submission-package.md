@@ -1,6 +1,6 @@
 # BraveLine — Shipaton Next Gen submission package
 
-Prepared submission copy, not a submission receipt. The entry is intended for Next Gen only. Store links and first-store-release declarations are intentionally absent.
+Next Gen submission verified on September 8, 2026. [Devpost entry](https://devpost.com/software/braveline) · [Public demo](https://www.youtube.com/watch?v=B37Pk8UeUXw) · [External delivery receipt](delivery-receipt-20260908.md). Store links and first-store-release declarations are intentionally absent.
 
 ## Project name
 
@@ -51,13 +51,13 @@ Add more workplace scenarios, test with consenting English learners, and validat
 
 See [README](../README.md) for setup and [native evidence](evidence-manifest.json). The repository contains the code and original assets. No private RevenueCat SDK key is distributed. Without configuration, the practice workflow remains usable and Plus is preview-only; judges can inspect the Test Store evidence without making a payment.
 
-## Prepared private form choices
+## Submitted form choices
 
 - Platform: Android.
 - Next Gen: public source route; active enrollment confirmed by entrant.
-- Academic email: enter only in the Devpost academic field, never in public copy.
+- Academic email: saved only in the private Devpost academic field, never in public copy.
 - RevenueCat project ID: `0b5db614`.
 - Icon: `assets/images/icon.png` (1024×1024).
 - Screenshot: `docs/evidence/submission-assets/braveline-android-1179x2556.png`.
-- Local media: the finished, visually reviewed `docs/evidence/submission-assets/braveline-live-demo-20260908.mp4` is 65.5 seconds, 1080×2340, 24 fps, H.264, and has no audio stream. It is an English-captioned edit of actual native recordings from separate passes, with silent-input disclosure. SHA-256: `6B0371CB484D78AC1F06CFD2356C7105B88FF93BDEF8B39CF33D3D8BDAF4FD0F`. The earlier 56-second screenshot montage is historical. A verified public YouTube or Vimeo URL is still required before final submission.
-- No store date, store URL, growth-fund opt-in, real revenue, or final submission is asserted.
+- Media: the finished, visually reviewed `docs/evidence/submission-assets/braveline-live-demo-20260908.mp4` is 65.5 seconds, 1080×2340, 24 fps, H.264, and has no audio stream. It is an English-captioned edit of actual native recordings from separate passes, with silent-input disclosure. SHA-256: `6B0371CB484D78AC1F06CFD2356C7105B88FF93BDEF8B39CF33D3D8BDAF4FD0F`. The earlier 56-second screenshot montage is historical. The [public YouTube URL](https://www.youtube.com/watch?v=B37Pk8UeUXw) was saved in the final submission.
+- No store date, store URL, growth-fund opt-in, or real revenue is asserted. The Next Gen submission itself is confirmed by receipt `1173574`.

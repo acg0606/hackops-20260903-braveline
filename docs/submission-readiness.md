@@ -1,5 +1,7 @@
 # RevenueCat Shipaton 2026 readiness
 
+**Delivery completed on 2026-09-08:** [Devpost submission](https://devpost.com/software/braveline), [public YouTube demo](https://www.youtube.com/watch?v=B37Pk8UeUXw), and [X publicity](https://x.com/derivativador/status/2097376183566430679) have external receipts. See [verified delivery](delivery-receipt-20260908.md). Judging and final eligibility review remain with the organizers.
+
 ## Local evidence complete
 
 - Prepare, Rehearse, Ready-empty, and Plus-preview surfaces are implemented and captured.
@@ -13,7 +15,7 @@
 - The configured app icon at `assets/images/icon.png` is 1024×1024.
 - A native Android API 36 emulator capture at the required 1179×2556 pixel dimensions is preserved at `docs/evidence/submission-assets/braveline-android-1179x2556.png`. It has no device frame and is local emulator evidence, not a store-listing receipt.
 
-## External gates still open
+## Verified delivery evidence
 
 - **FACT — RevenueCat configuration:** project `0b5db614`, offering `default`, Test Store products `lifetime`, `yearly`, and `monthly`, entitlement `braveline_pro`, and paywall `wfc1e1a89be5494283` are configured. The paywall is published and explicitly says `TEST STORE · NO REAL CHARGE`. See [`evidence/revenuecat-configuration-20260908.md`](evidence/revenuecat-configuration-20260908.md).
 - **FACT — RevenueCat device receipt:** an Android API 36 development build loaded the published paywall, completed an observed simulated annual Test Store purchase, and read back the active `braveline_pro` entitlement. No real store or charge was used. See [`evidence/revenuecat-test-store-20260908/receipt.md`](evidence/revenuecat-test-store-20260908/receipt.md).
@@ -23,7 +25,8 @@
 - **FACT — public repository:** GitHub readback on 2026-09-08 verified the [repository](https://github.com/acg0606/hackops-20260903-braveline) as public and MIT-licensed at commit `025f322`. The targeted text scan covered eight reachable commits and 145 tracked files, finding no high-confidence credentials or tracked credential files. This scan does not establish every binary asset's disclosure safety; anonymous access verification is separate.
 - **FACT — new native footage:** five clips were recorded directly with Android `screenrecord`, in separate passes, with per-clip durations and hashes in [`evidence/native-demo-20260908-r2/manifest.json`](evidence/native-demo-20260908-r2/manifest.json). Silent input was deliberate; microphone privacy remained enabled and the raw clips have no audio stream. The earlier 56-second screenshot montage remains historical material.
 - **FACT — finished local demo:** [`braveline-live-demo-20260908.mp4`](evidence/submission-assets/braveline-live-demo-20260908.mp4) is a visually reviewed English-captioned edit of actual native screen recordings from separate passes. Measured duration: 65.5 seconds; 1080×2340; 24 fps; H.264; no audio stream; 3,474,141 bytes. SHA-256: `6B0371CB484D78AC1F06CFD2356C7105B88FF93BDEF8B39CF33D3D8BDAF4FD0F`. The edit discloses silent emulator input and microphone privacy, and does not claim an uncut recording.
-- **HOLD — public video delivery:** publish the verified local edit to a public YouTube or Vimeo URL and retain an anonymous playback readback. No public video URL is verified yet.
-- **HOLD — Devpost:** recheck the logged-in registration, populate the entry, and submit only after every required receipt exists.
+- **FACT — public video delivery:** [YouTube demo](https://www.youtube.com/watch?v=B37Pk8UeUXw) published and verified without cookies or authorization; player metadata returned `OK` and `isPrivate=false`.
+- **FACT — Devpost:** submission `1173574` confirmed at `2026-09-08T17:22:40.736Z`; live MCP and authenticated finalization show `SUBMITTED`, 5/5 steps complete. Icon, screenshot and private academic field saved.
+- **FACT — X publicity:** [post](https://x.com/derivativador/status/2097376183566430679) published at `2026-09-08T17:27:04Z`, then verified under the authenticated account. This is independent from hackathon submission.
 
 The APKs and screenshots are local emulator evidence, not a Play Store transaction, public store, eligibility, public-video, or submission receipt. The historical RevenueCat Test Store receipt records the simulated annual purchase and active entitlement; the fresh corrected native receipt verifies restore separately. Neither represents a real charge or new store purchase. The UI-hardening APK is an x86_64 test build signed with the repository's current release signing configuration; it is not a Play Store artifact.
